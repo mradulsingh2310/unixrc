@@ -1,0 +1,120 @@
+# ┌──────────────────────────────────────────────────────────────┐
+# │  GHOSTTY CONFIG - Synced to: ~/unixrc/ghostty/config        │
+# │  After editing, run: cp ~/.config/ghostty/config ~/unixrc/ghostty/config
+# │  Then commit: cd ~/unixrc && git add -A && git commit -m "update ghostty" && git push
+# └──────────────────────────────────────────────────────────────┘
+
+# Hide native macOS tabs (use tmux tabs only)
+macos-titlebar-style = hidden
+
+# Use non-native fullscreen (works with hidden titlebar)
+macos-non-native-fullscreen = true
+
+# Auto-start tmux (attach to existing session or create new)
+command = /opt/homebrew/bin/tmux new-session -A -s main
+
+# Cmd+a sends Ctrl+a (tmux prefix)
+keybind = super+a=text:\x01
+
+# Cmd+t for new tmux window
+keybind = super+t=text:\x01c
+
+# Cmd+Shift+t for new Ghostty window (separate terminal)
+keybind = super+shift+t=new_window
+
+# Cmd+w to close tmux pane
+keybind = super+w=text:\x01x
+
+# Cmd+1-9 for tmux windows (select-window directly)
+keybind = super+one=text:\x01\x31
+keybind = super+two=text:\x01\x32
+keybind = super+three=text:\x01\x33
+keybind = super+four=text:\x01\x34
+keybind = super+five=text:\x01\x35
+keybind = super+six=text:\x01\x36
+keybind = super+seven=text:\x01\x37
+keybind = super+eight=text:\x01\x38
+keybind = super+nine=text:\x01\x39
+
+# Cmd+shift+] and [ for next/prev window
+keybind = super+shift+right_bracket=text:\x01n
+keybind = super+shift+left_bracket=text:\x01p
+
+# Cmd+d for vertical split
+keybind = super+d=text:\x01|
+
+# Cmd+shift+d for horizontal split
+keybind = super+shift+d=text:\x01-
+
+# Fullscreen (Cmd+f)
+keybind = super+f=toggle_fullscreen
+
+# Unbind Cmd+Enter so Rectangle can use it
+keybind = super+enter=unbind
+
+# Zoom/maximize current pane (Cmd+=)
+keybind = super+equal=text:\x01z
+
+# Reset pane layout (Cmd+0)
+keybind = super+zero=text:\x01E
+
+# Resize tmux panes (Cmd+Alt+Arrow)
+keybind = super+alt+left=text:\x01H
+keybind = super+alt+right=text:\x01L
+keybind = super+alt+up=text:\x01K
+keybind = super+alt+down=text:\x01J
+
+# ─────────────────────────────────────────
+# Neovim Cmd Keybindings (send escape sequences)
+# ─────────────────────────────────────────
+# Cmd+s = Save
+keybind = super+s=text:\x1b[27;6;115~
+
+# Cmd+z = Undo
+keybind = super+z=text:\x1b[27;6;122~
+
+# Cmd+shift+z = Redo
+keybind = super+shift+z=text:\x1b[27;6;90~
+
+# Cmd+/ = Comment toggle
+keybind = super+slash=text:\x1b[27;6;47~
+
+# Cmd+p = Find files
+keybind = super+p=text:\x1b[27;6;112~
+
+# Cmd+shift+p = Command palette
+keybind = super+shift+p=text:\x1b[27;6;80~
+
+# Cmd+b = Toggle file explorer
+keybind = super+b=text:\x1b[27;6;98~
+
+# Cmd+h/j/k/l = Navigate panes (works with tmux-navigator)
+keybind = super+h=text:\x08
+keybind = super+j=text:\x1b[27;6;106~
+keybind = super+k=text:\x1b[27;6;107~
+keybind = super+l=text:\x1b[27;6;108~
+
+# Cmd+n = New buffer
+keybind = super+n=text:\x1b[27;6;110~
+
+# Cmd+o = Open file
+keybind = super+o=text:\x1b[27;6;111~
+
+# Cmd+, = Open settings/config
+keybind = super+comma=text:\x1b[27;6;44~
+
+# Theme - Catppuccin Mocha
+background = 1e1e2e
+foreground = cdd6f4
+
+# Cursor - Vim style (block, no blink)
+cursor-style = block
+cursor-style-blink = false
+
+# Font
+font-family = JetBrainsMono Nerd Font
+font-size = 14
+
+# Padding
+window-padding-x = 10
+window-padding-y = 5
