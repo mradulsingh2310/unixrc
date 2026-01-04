@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mradulsingh.unixrc-sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/mradulsingh/unixrc/sync.sh</string>
+    </array>
+
+    <!-- Watch these paths for changes -->
+    <key>WatchPaths</key>
+    <array>
+        <string>/Users/mradulsingh/.config/ghostty/config</string>
+        <string>/Users/mradulsingh/.tmux.conf</string>
+        <string>/Users/mradulsingh/.config/nvim/init.lua</string>
+        <string>/Users/mradulsingh/.config/nvim/lua/config</string>
+        <string>/Users/mradulsingh/.config/nvim/lua/plugins</string>
+    </array>
+
+    <!-- Throttle to avoid rapid-fire triggers (10 second cooldown) -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <!-- Run at load to ensure initial sync -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- Keep alive only when paths change, not continuously -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <!-- Redirect stdout/stderr to log -->
+    <key>StandardOutPath</key>
+    <string>/Users/mradulsingh/unixrc/.sync-stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/mradulsingh/unixrc/.sync-stderr.log</string>
+</dict>
+</plist>

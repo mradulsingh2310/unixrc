@@ -316,6 +316,17 @@ tail -f ~/unixrc/.sync.log
 ~/unixrc/sync.sh
 ```
 
+### Modifying the sync behavior
+
+All sync files are in the repo:
+- `sync.sh` - The sync logic
+- `com.mradulsingh.unixrc-sync.plist` - launchd configuration
+
+After editing either file, reinstall the agent:
+```bash
+~/unixrc/install-sync.sh
+```
+
 ---
 
 ## Configuration Files
@@ -344,7 +355,9 @@ unixrc/
 │           └── which-key.lua
 ├── tmux/
 │   └── tmux.conf       # Tmux configuration
-└── sync.sh             # Auto-sync script (triggered by launchd)
+├── sync.sh             # Auto-sync script (triggered by launchd)
+├── install-sync.sh     # Reinstall launchd agent after changes
+└── com.mradulsingh.unixrc-sync.plist  # launchd configuration
 ```
 
 ---
