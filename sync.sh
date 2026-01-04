@@ -94,8 +94,8 @@ fi
 # Generate commit message based on what changed
 COMMIT_MSG="Auto-sync: $(date '+%Y-%m-%d %H:%M')"
 
-# --no-gpg-sign: GPG may not be available in launchd environment
-git commit --no-gpg-sign -m "$COMMIT_MSG"
+# Use the passwordless GPG key for auto-sync commits
+git commit -S -m "$COMMIT_MSG"
 log "Committed: $COMMIT_MSG"
 
 # Push to remote
