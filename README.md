@@ -331,10 +331,33 @@ After editing either file, reinstall the agent:
 
 Auto-sync commits are GPG signed using a **passwordless key** (required for launchd automation).
 
-The public key is at `~/unixrc/autosync-gpg-public.key`. Add it to GitHub:
-1. Go to https://github.com/settings/keys
-2. Click "New GPG key"
-3. Paste contents of `autosync-gpg-public.key`
+To generate a new passwordless GPG key:
+```bash
+# Create key config
+cat > /tmp/gpg-key.txt << 'EOF'
+%no-protection
+Key-Type: RSA
+Key-Length: 4096
+Name-Real: Your Name (autosync)
+Name-Email: your-email@example.com
+Expire-Date: 0
+%commit
+EOF
+
+# Generate key
+gpg --batch --generate-key /tmp/gpg-key.txt
+
+# Get key ID
+gpg --list-keys --keyid-format SHORT your-email@example.com
+
+# Export and add to GitHub (https://github.com/settings/keys)
+gpg --armor --export YOUR_KEY_ID
+
+# Configure repo to use the key
+cd ~/unixrc
+git config user.signingkey YOUR_KEY_ID
+git config commit.gpgsign true
+```
 
 ---
 
