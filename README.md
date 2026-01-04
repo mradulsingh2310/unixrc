@@ -280,6 +280,44 @@ Press `<Space>` and wait to see all available keybindings.
 
 ---
 
+## Auto-Sync
+
+Config changes are **automatically synced to GitHub** using macOS `launchd`.
+
+### How it works
+- `launchd` watches your config files for changes
+- When a file changes, `sync.sh` copies it to `~/unixrc`
+- Changes are auto-committed and pushed to GitHub
+- 10-second throttle prevents rapid-fire triggers
+
+### Watched paths
+- `~/.config/ghostty/config`
+- `~/.tmux.conf`
+- `~/.config/nvim/init.lua`
+- `~/.config/nvim/lua/config/*`
+- `~/.config/nvim/lua/plugins/*`
+
+### Managing the sync agent
+
+```bash
+# Check status
+launchctl list | grep unixrc
+
+# Stop auto-sync
+launchctl unload ~/Library/LaunchAgents/com.mradulsingh.unixrc-sync.plist
+
+# Start auto-sync
+launchctl load ~/Library/LaunchAgents/com.mradulsingh.unixrc-sync.plist
+
+# View sync log
+tail -f ~/unixrc/.sync.log
+
+# Manual sync (if needed)
+~/unixrc/sync.sh
+```
+
+---
+
 ## Configuration Files
 
 ```
@@ -304,8 +342,9 @@ unixrc/
 │           ├── search.lua
 │           ├── tmux-navigator.lua
 │           └── which-key.lua
-└── tmux/
-    └── tmux.conf       # Tmux configuration
+├── tmux/
+│   └── tmux.conf       # Tmux configuration
+└── sync.sh             # Auto-sync script (triggered by launchd)
 ```
 
 ---
