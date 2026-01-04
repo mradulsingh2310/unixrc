@@ -4,6 +4,9 @@
 # │  Triggered by launchd when config files change               │
 # └──────────────────────────────────────────────────────────────┘
 
+# Add Homebrew to PATH (launchd has minimal PATH)
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
 set -e
 
 REPO_DIR="$HOME/unixrc"
@@ -19,26 +22,27 @@ log "Sync triggered"
 # Change to repo directory
 cd "$REPO_DIR"
 
-# Track if anything changed
-CHANGED=false
+# Track changed files
+CHANGED_FILES=()
 
 # Sync Ghostty config
 if ! diff -q "$HOME/.config/ghostty/config" "$REPO_DIR/ghostty/config" > /dev/null 2>&1; then
     cp "$HOME/.config/ghostty/config" "$REPO_DIR/ghostty/config"
     log "Synced: ghostty/config"
-    CHANGED=true
+    CHANGED_FILES+=("ghostty")
 fi
 
 # Sync Tmux config
 if ! diff -q "$HOME/.tmux.conf" "$REPO_DIR/tmux/tmux.conf" > /dev/null 2>&1; then
     cp "$HOME/.tmux.conf" "$REPO_DIR/tmux/tmux.conf"
     log "Synced: tmux/tmux.conf"
-    CHANGED=true
+    CHANGED_FILES+=("tmux")
 fi
 
 # Sync Neovim config (check each file)
 NVIM_SRC="$HOME/.config/nvim"
 NVIM_DST="$REPO_DIR/nvim"
+NVIM_CHANGED=false
 
 # Files to sync (excluding .git, lazy data, etc.)
 NVIM_FILES=(
@@ -71,13 +75,17 @@ for file in "${NVIM_FILES[@]}"; do
         if ! diff -q "$src" "$dst" > /dev/null 2>&1; then
             cp "$src" "$dst"
             log "Synced: nvim/$file"
-            CHANGED=true
+            NVIM_CHANGED=true
         fi
     fi
 done
 
+if [[ "$NVIM_CHANGED" == "true" ]]; then
+    CHANGED_FILES+=("nvim")
+fi
+
 # If nothing changed, exit
-if [[ "$CHANGED" == "false" ]]; then
+if [[ ${#CHANGED_FILES[@]} -eq 0 ]]; then
     log "No changes detected"
     exit 0
 fi
@@ -91,8 +99,9 @@ if git diff --cached --quiet; then
     exit 0
 fi
 
-# Generate commit message based on what changed
-COMMIT_MSG="Auto-sync: $(date '+%Y-%m-%d %H:%M')"
+# Generate commit message with timestamp and changed files
+FILES_LIST=$(IFS=', '; echo "${CHANGED_FILES[*]}")
+COMMIT_MSG="Auto-sync [$(date '+%H:%M')]: $FILES_LIST"
 
 # Use the passwordless GPG key for auto-sync commits
 git commit -S -m "$COMMIT_MSG"
