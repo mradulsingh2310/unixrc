@@ -115,6 +115,9 @@ cursor-style-blink = false
 font-family = JetBrainsMono Nerd Font
 font-size = 14
 
+# Make Option key work as Alt (for Neovim keybindings)
+macos-option-as-alt = true
+
 # Padding
 window-padding-x = 10
 window-padding-y = 5
