@@ -106,14 +106,11 @@ keybind = super+comma=text:\x1b[27;6;44~
 # ─────────────────────────────────────────
 # Neovim Test/Debug Keybindings (Ctrl+Shift)
 # ─────────────────────────────────────────
-# Ctrl+Shift+T = Run test in horizontal split
+# Ctrl+Shift+T = Test prefix (then: nothing=run test, d=debug test)
 keybind = ctrl+shift+t=text:\x1b[116;6u
 
 # Ctrl+Shift+B = Toggle breakpoint
 keybind = ctrl+shift+b=text:\x1b[98;6u
-
-# Ctrl+Shift+D = Run test in debug mode
-keybind = ctrl+shift+d=text:\x1b[100;6u
 
 # Theme - Catppuccin Mocha
 background = 1e1e2e
