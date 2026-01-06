@@ -272,54 +272,22 @@ return {
           local map = vim.keymap.set
 
           -- Ctrl+Shift+T: Run test for current file in horizontal split
-          -- Standard terminal mapping
-          map({ "n", "i" }, "<C-S-t>", function()
-            vim.cmd("stopinsert")
-            run_test_in_split()
-          end, { desc = "Run Test (horizontal split)" })
-
-          -- Ghostty CSI u encoding for Ctrl+Shift+T (modifier 6, keycode 116 for 't')
+          -- Ghostty CSI u encoding: \x1b[116;6u
           map({ "n", "i" }, "\x1b[116;6u", function()
             vim.cmd("stopinsert")
             run_test_in_split()
           end, { desc = "Run Test (horizontal split)" })
 
-          -- Alternative: xterm-style for Ctrl+Shift+T
-          map({ "n", "i" }, "\x1b[27;6;116~", function()
-            vim.cmd("stopinsert")
-            run_test_in_split()
-          end, { desc = "Run Test (horizontal split)" })
-
           -- Ctrl+Shift+B: Toggle breakpoint
-          map({ "n", "i" }, "<C-S-b>", function()
-            vim.cmd("stopinsert")
-            require("dap").toggle_breakpoint()
-          end, { desc = "Toggle Breakpoint" })
-
-          -- Ghostty CSI u encoding for Ctrl+Shift+B
+          -- Ghostty CSI u encoding: \x1b[98;6u
           map({ "n", "i" }, "\x1b[98;6u", function()
             vim.cmd("stopinsert")
             require("dap").toggle_breakpoint()
           end, { desc = "Toggle Breakpoint" })
 
-          map({ "n", "i" }, "\x1b[27;6;98~", function()
-            vim.cmd("stopinsert")
-            require("dap").toggle_breakpoint()
-          end, { desc = "Toggle Breakpoint" })
-
           -- Ctrl+Shift+D: Run test in debug mode
-          map({ "n", "i" }, "<C-S-d>", function()
-            vim.cmd("stopinsert")
-            run_test_debug()
-          end, { desc = "Debug Test" })
-
-          -- Ghostty CSI u encoding for Ctrl+Shift+D
+          -- Ghostty CSI u encoding: \x1b[100;6u
           map({ "n", "i" }, "\x1b[100;6u", function()
-            vim.cmd("stopinsert")
-            run_test_debug()
-          end, { desc = "Debug Test" })
-
-          map({ "n", "i" }, "\x1b[27;6;100~", function()
             vim.cmd("stopinsert")
             run_test_debug()
           end, { desc = "Debug Test" })
