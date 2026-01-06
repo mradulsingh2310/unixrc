@@ -4,7 +4,25 @@
 --   Ctrl+Shift+B: Toggle breakpoint
 
 return {
-  -- Neotest with adapters
+  -- neotest-java adapter (must be separate plugin spec)
+  {
+    "rcasia/neotest-java",
+    ft = "java",
+    dependencies = {
+      "mfussenegger/nvim-jdtls",
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+      "theHamsta/nvim-dap-virtual-text",
+    },
+  },
+
+  -- neotest-python adapter
+  {
+    "nvim-neotest/neotest-python",
+    ft = "python",
+  },
+
+  -- Neotest core
   {
     "nvim-neotest/neotest",
     dependencies = {
@@ -12,12 +30,9 @@ return {
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
-      -- Adapters
-      "rcasia/neotest-java",
-      "nvim-neotest/neotest-python",
     },
-    opts = function()
-      return {
+    config = function()
+      require("neotest").setup({
         -- Output panel at bottom (horizontal split inside Neovim)
         output_panel = {
           enabled = true,
@@ -35,17 +50,15 @@ return {
           enabled = true,
           open = "botright vsplit | vertical resize 40",
         },
-        -- Adapters
+        -- Adapters (required AFTER plugins load)
         adapters = {
-          require("neotest-java")({
-            ignore_wrapper = false,
-          }),
+          require("neotest-java")({}),
           require("neotest-python")({
             dap = { justMyCode = false },
             runner = "pytest",
           }),
         },
-      }
+      })
     end,
     keys = {
       { "<leader>tr", function() require("neotest").run.run() end, desc = "Run Nearest Test" },
@@ -60,7 +73,7 @@ return {
     },
   },
 
-  -- Ctrl+Shift keybindings (set up after plugins load)
+  -- Ctrl+Shift keybindings
   {
     "folke/which-key.nvim",
     opts = function(_, opts)
