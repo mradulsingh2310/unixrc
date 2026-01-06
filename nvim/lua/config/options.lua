@@ -25,6 +25,7 @@ opt.autoindent = true -- Copy indent from current line when starting new line
 opt.smartindent = true -- Insert indents automatically
 opt.copyindent = true -- Copy the structure of existing indent
 opt.preserveindent = true -- Preserve indent structure when reindenting
+opt.cindent = true -- C-style indentation (better for Java/C/C++)
 
 -- Search
 opt.ignorecase = true -- Ignore case
