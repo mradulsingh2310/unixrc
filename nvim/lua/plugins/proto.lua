@@ -8,9 +8,15 @@ return {
     end,
   },
 
-  -- Setup buf_ls using native Neovim LSP API
+  -- Disable other proto LSPs (pbls, protols) to avoid conflicts
   {
     "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        pbls = { enabled = false },
+        protols = { enabled = false },
+      },
+    },
     init = function()
       -- Register buf_ls as an LSP server
       vim.lsp.config("buf_ls", {
