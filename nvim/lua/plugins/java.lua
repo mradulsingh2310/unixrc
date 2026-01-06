@@ -1,12 +1,35 @@
--- Java LSP configuration with auto-import support
+-- Java LSP configuration with auto-import support and proper project indexing
 return {
   {
     "mfussenegger/nvim-jdtls",
     opts = function(_, opts)
       opts.settings = vim.tbl_deep_extend("force", opts.settings or {}, {
         java = {
+          -- Enable autobuild for better indexing
+          autobuild = { enabled = true },
+
+          -- Project import settings for Maven/Gradle
+          import = {
+            enabled = true,
+            maven = { enabled = true },
+            gradle = { enabled = true },
+            exclusions = {
+              "**/node_modules/**",
+              "**/.metadata/**",
+              "**/archetype-resources/**",
+              "**/META-INF/maven/**",
+            },
+          },
+
+          -- Maven specific settings
+          maven = {
+            downloadSources = true,
+            updateSnapshots = true,
+          },
+
+          -- Completion settings
           completion = {
-            -- Favor unimported classes in completion
+            -- Show unimported classes in completion
             favoriteStaticMembers = {
               "org.junit.Assert.*",
               "org.junit.jupiter.api.Assertions.*",
@@ -29,13 +52,29 @@ return {
               "com",
               "org",
             },
+            -- Improve completion matching
+            matchCase = "firstLetter",
           },
+
+          -- Source organization
           sources = {
             organizeImports = {
               starThreshold = 9999,
               staticStarThreshold = 9999,
             },
           },
+
+          -- Eclipse settings for better indexing
+          eclipse = {
+            downloadSources = true,
+          },
+
+          -- Reference code lens
+          referencesCodeLens = { enabled = true },
+          implementationsCodeLens = { enabled = true },
+
+          -- Signature help
+          signatureHelp = { enabled = true },
         },
       })
       return opts
