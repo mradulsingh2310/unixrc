@@ -118,6 +118,10 @@ font-size = 14
 # Make Option key work as Alt (for Neovim keybindings)
 macos-option-as-alt = true
 
+# Option+Arrow = Move by word (works in shell, neovim, etc.)
+keybind = alt+left=text:\x1bb
+keybind = alt+right=text:\x1bf
+
 # Padding
 window-padding-x = 10
 window-padding-y = 5
