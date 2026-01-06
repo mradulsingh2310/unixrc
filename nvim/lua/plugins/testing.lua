@@ -271,12 +271,36 @@ return {
         callback = function()
           local map = vim.keymap.set
 
-          -- Ctrl+Shift+T: Run test for current file in horizontal split
+          -- Ctrl+Shift+T: Test prefix
+          -- - Press Ctrl+Shift+T alone (or with any key except 'd'): Run test
+          -- - Press Ctrl+Shift+T then 'd': Run test in debug mode
           -- Ghostty CSI u encoding: \x1b[116;6u
           map({ "n", "i" }, "\x1b[116;6u", function()
             vim.cmd("stopinsert")
-            run_test_in_split()
-          end, { desc = "Run Test (horizontal split)" })
+
+            -- Show hint and wait for next key with timeout
+            vim.api.nvim_echo({ { "Test: [Enter]=run, [d]=debug", "MoreMsg" } }, false, {})
+
+            -- Wait for next character with 1.5 second timeout
+            local ok, char = pcall(function()
+              -- Use getcharstr with timeout
+              vim.fn.inputsave()
+              local c = vim.fn.getcharstr()
+              vim.fn.inputrestore()
+              return c
+            end)
+
+            -- Clear the echo
+            vim.api.nvim_echo({ { "", "" } }, false, {})
+
+            if ok and char == "d" then
+              -- 'd' pressed - run debug test
+              run_test_debug()
+            else
+              -- Any other key or Enter - run regular test
+              run_test_in_split()
+            end
+          end, { desc = "Test Menu (d=debug)" })
 
           -- Ctrl+Shift+B: Toggle breakpoint
           -- Ghostty CSI u encoding: \x1b[98;6u
@@ -284,13 +308,6 @@ return {
             vim.cmd("stopinsert")
             require("dap").toggle_breakpoint()
           end, { desc = "Toggle Breakpoint" })
-
-          -- Ctrl+Shift+D: Run test in debug mode
-          -- Ghostty CSI u encoding: \x1b[100;6u
-          map({ "n", "i" }, "\x1b[100;6u", function()
-            vim.cmd("stopinsert")
-            run_test_debug()
-          end, { desc = "Debug Test" })
         end,
       })
 
