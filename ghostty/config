@@ -122,6 +122,10 @@ macos-option-as-alt = true
 keybind = alt+left=text:\x1bb
 keybind = alt+right=text:\x1bf
 
+# Ctrl+Arrow = Standard terminal sequences (fix conflicts)
+keybind = ctrl+left=text:\x1b[1;5D
+keybind = ctrl+right=text:\x1b[1;5C
+
 # Padding
 window-padding-x = 10
 window-padding-y = 5
