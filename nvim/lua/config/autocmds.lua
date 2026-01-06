@@ -10,6 +10,20 @@
 local zeus_path = "/Users/mradulsingh/zeus_backend/zeus"
 
 -- ─────────────────────────────────────────
+-- Java: Ensure proper indentation (override filetype plugin)
+-- ─────────────────────────────────────────
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "java",
+  callback = function()
+    vim.opt_local.cindent = true
+    vim.opt_local.autoindent = true
+    vim.opt_local.smartindent = true
+    vim.opt_local.indentexpr = "" -- Clear any custom indentexpr that might interfere
+  end,
+  desc = "Ensure Java files use cindent for proper auto-indentation",
+})
+
+-- ─────────────────────────────────────────
 -- Zeus Backend: Format with Spotless on save
 -- ─────────────────────────────────────────
 vim.api.nvim_create_autocmd("BufWritePost", {
