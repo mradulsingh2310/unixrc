@@ -1,5 +1,6 @@
+-- Official buf LSP setup from https://buf.build/docs/cli/editors-lsp/
 return {
-  -- Add proto filetype and treesitter
+  -- Add proto treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
@@ -7,27 +8,18 @@ return {
     end,
   },
 
-  -- Configure buf LSP (official buf lsp serve)
+  -- Setup buf_ls using native Neovim LSP API
   {
     "neovim/nvim-lspconfig",
-    opts = function()
-      -- Register buf_ls with lspconfig
-      local configs = require("lspconfig.configs")
-      if not configs.buf_ls then
-        configs.buf_ls = {
-          default_config = {
-            cmd = { "buf", "lsp", "serve" },
-            filetypes = { "proto" },
-            root_dir = require("lspconfig.util").root_pattern("buf.yaml", ".git"),
-          },
-        }
-      end
-
-      return {
-        servers = {
-          buf_ls = {},
-        },
-      }
+    init = function()
+      -- Register buf_ls as an LSP server
+      vim.lsp.config("buf_ls", {
+        cmd = { "buf", "lsp", "serve" },
+        filetypes = { "proto" },
+        root_markers = { "buf.yaml", ".git" },
+      })
+      -- Enable buf_ls
+      vim.lsp.enable("buf_ls")
     end,
   },
 }
