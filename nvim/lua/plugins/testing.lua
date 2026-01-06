@@ -1,89 +1,7 @@
 -- Testing configuration with neotest for Java (and Python)
 -- Keybindings:
---   Ctrl+Shift+T: Run test for current file (opens in horizontal split)
+--   Ctrl+Shift+T: Run test (then press 'd' for debug mode)
 --   Ctrl+Shift+B: Toggle breakpoint
---   Ctrl+Shift+D: Run test in debug mode
-
--- Helper function to find corresponding test file for a source file
-local function find_test_file()
-  local current_file = vim.fn.expand("%:p")
-  local current_name = vim.fn.expand("%:t:r") -- filename without extension
-
-  -- For Java files: MyClass.java -> MyClassTest.java
-  if current_file:match("%.java$") then
-    -- Check if already in a test file
-    if current_file:match("Test%.java$") or current_file:match("/test/") then
-      return current_file
-    end
-
-    -- Convert src/main/java/... to src/test/java/...Test.java
-    local test_file = current_file:gsub("/main/", "/test/"):gsub("%.java$", "Test.java")
-    if vim.fn.filereadable(test_file) == 1 then
-      return test_file
-    end
-
-    -- Try *Tests.java variant
-    test_file = current_file:gsub("/main/", "/test/"):gsub("%.java$", "Tests.java")
-    if vim.fn.filereadable(test_file) == 1 then
-      return test_file
-    end
-  end
-
-  -- For Python files: my_module.py -> test_my_module.py or my_module_test.py
-  if current_file:match("%.py$") then
-    if current_file:match("test_") or current_file:match("_test%.py$") then
-      return current_file
-    end
-
-    -- Try test_ prefix in tests/ directory
-    local dir = vim.fn.expand("%:p:h")
-    local test_dir = dir:gsub("/src/", "/tests/"):gsub("/lib/", "/tests/")
-    local test_file = test_dir .. "/test_" .. current_name .. ".py"
-    if vim.fn.filereadable(test_file) == 1 then
-      return test_file
-    end
-
-    -- Try _test suffix
-    test_file = test_dir .. "/" .. current_name .. "_test.py"
-    if vim.fn.filereadable(test_file) == 1 then
-      return test_file
-    end
-  end
-
-  return current_file
-end
-
--- Function to run test in horizontal split
-local function run_test_in_split()
-  local test_file = find_test_file()
-  local current_file = vim.fn.expand("%:p")
-
-  -- If we found a different test file, open it first
-  if test_file ~= current_file then
-    -- Open test file in horizontal split below
-    vim.cmd("botright split " .. vim.fn.fnameescape(test_file))
-  end
-
-  -- Run the test using neotest
-  require("neotest").run.run(test_file)
-
-  -- Open output panel in horizontal split
-  require("neotest").output_panel.open()
-end
-
--- Function to run test in debug mode
-local function run_test_debug()
-  local test_file = find_test_file()
-  local current_file = vim.fn.expand("%:p")
-
-  -- If we found a different test file, open it first
-  if test_file ~= current_file then
-    vim.cmd("botright split " .. vim.fn.fnameescape(test_file))
-  end
-
-  -- Run the test with DAP strategy
-  require("neotest").run.run({ test_file, strategy = "dap" })
-end
 
 return {
   -- Neotest core configuration
@@ -96,28 +14,35 @@ return {
       "nvim-treesitter/nvim-treesitter",
     },
     opts = {
-      -- Configure output panel to open at bottom (horizontal)
+      -- Output panel at bottom (horizontal split inside Neovim)
       output_panel = {
         enabled = true,
         open = "botright split | resize 15",
       },
-      -- Status signs in the gutter
+      -- Status in gutter
       status = {
         virtual_text = true,
         signs = true,
       },
-      -- Summary panel on the right
-      summary = {
-        open = "botright vsplit | vertical resize 50",
-      },
-      -- Floating output settings
+      -- Don't auto-open floating output
       output = {
         enabled = true,
-        open_on_run = false, -- We'll use the panel instead
+        open_on_run = false,
+      },
+      -- Summary panel configuration
+      summary = {
+        enabled = true,
+        open = "botright vsplit | vertical resize 40",
       },
     },
     keys = {
-      -- Override default keymaps to use our custom functions
+      {
+        "<leader>tr",
+        function()
+          require("neotest").run.run()
+        end,
+        desc = "Run Nearest Test",
+      },
       {
         "<leader>tt",
         function()
@@ -130,14 +55,7 @@ return {
         function()
           require("neotest").run.run(vim.uv.cwd())
         end,
-        desc = "Run All Test Files",
-      },
-      {
-        "<leader>tr",
-        function()
-          require("neotest").run.run()
-        end,
-        desc = "Run Nearest Test",
+        desc = "Run All Tests",
       },
       {
         "<leader>tl",
@@ -158,7 +76,7 @@ return {
         function()
           require("neotest").output.open({ enter = true, auto_close = true })
         end,
-        desc = "Show Output",
+        desc = "Show Output (floating)",
       },
       {
         "<leader>tO",
@@ -173,13 +91,6 @@ return {
           require("neotest").run.stop()
         end,
         desc = "Stop Test",
-      },
-      {
-        "<leader>tw",
-        function()
-          require("neotest").watch.toggle(vim.fn.expand("%"))
-        end,
-        desc = "Toggle Watch",
       },
       {
         "<leader>td",
@@ -200,44 +111,46 @@ return {
       "mfussenegger/nvim-dap",
       "nvim-neotest/neotest",
     },
-    config = function()
-      -- Add Java adapter to neotest
-      require("neotest").setup({
-        adapters = {
-          require("neotest-java")({
-            -- Use Maven or Gradle based on project
-            junit_jar = nil, -- Auto-detect
-            incremental_build = true,
-          }),
-        },
-      })
-    end,
+    opts = {
+      junit_jar = nil,
+      incremental_build = true,
+    },
   },
 
-  -- Python test adapter (bonus)
+  -- Python test adapter
   {
     "nvim-neotest/neotest-python",
     ft = "python",
     dependencies = {
       "nvim-neotest/neotest",
     },
-    config = function()
-      require("neotest").setup({
-        adapters = {
-          require("neotest-python")({
-            dap = { justMyCode = false },
-            runner = "pytest",
-          }),
-        },
-      })
+    opts = {
+      dap = { justMyCode = false },
+      runner = "pytest",
+    },
+  },
+
+  -- Configure adapters properly
+  {
+    "nvim-neotest/neotest",
+    opts = function(_, opts)
+      opts.adapters = opts.adapters or {}
+      -- Add adapters if available
+      local ok_java, neotest_java = pcall(require, "neotest-java")
+      if ok_java then
+        table.insert(opts.adapters, neotest_java({ incremental_build = true }))
+      end
+      local ok_python, neotest_python = pcall(require, "neotest-python")
+      if ok_python then
+        table.insert(opts.adapters, neotest_python({ dap = { justMyCode = false } }))
+      end
     end,
   },
 
-  -- DAP configuration for breakpoints
+  -- DAP for breakpoints
   {
     "mfussenegger/nvim-dap",
     keys = {
-      -- Breakpoint keybindings with leader
       {
         "<leader>db",
         function()
@@ -252,65 +165,45 @@ return {
         end,
         desc = "Conditional Breakpoint",
       },
-      {
-        "<leader>dl",
-        function()
-          require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-        end,
-        desc = "Log Point",
-      },
     },
   },
 
-  -- Custom keybindings for Ctrl+Shift combinations
+  -- Ctrl+Shift keybindings
   {
     "folke/which-key.nvim",
     opts = function(_, opts)
-      -- Register our test keybindings with which-key
       vim.api.nvim_create_autocmd("VimEnter", {
         callback = function()
           local map = vim.keymap.set
 
-          -- Ctrl+Shift+T: Test prefix
-          -- - Press Ctrl+Shift+T alone (or with any key except 'd'): Run test
-          -- - Press Ctrl+Shift+T then 'd': Run test in debug mode
-          -- Ghostty CSI u encoding: \x1b[116;6u
+          -- Ctrl+Shift+T: Test menu
+          -- Press Enter or any key = run test, press 'd' = debug test
           map({ "n", "i" }, "\x1b[116;6u", function()
             vim.cmd("stopinsert")
+            vim.api.nvim_echo({ { "[t]est  [d]ebug", "Question" } }, false, {})
 
-            -- Show hint and wait for next key with timeout
-            vim.api.nvim_echo({ { "Test: [Enter]=run, [d]=debug", "MoreMsg" } }, false, {})
+            local char = vim.fn.getcharstr()
+            vim.cmd("redraw")
 
-            -- Wait for next character with 1.5 second timeout
-            local ok, char = pcall(function()
-              -- Use getcharstr with timeout
-              vim.fn.inputsave()
-              local c = vim.fn.getcharstr()
-              vim.fn.inputrestore()
-              return c
-            end)
-
-            -- Clear the echo
-            vim.api.nvim_echo({ { "", "" } }, false, {})
-
-            if ok and char == "d" then
-              -- 'd' pressed - run debug test
-              run_test_debug()
+            if char == "d" then
+              -- Debug: run with DAP and open output panel
+              require("neotest").output_panel.open()
+              require("neotest").run.run({ strategy = "dap" })
             else
-              -- Any other key or Enter - run regular test
-              run_test_in_split()
+              -- Run test and open output panel at bottom
+              require("neotest").output_panel.open()
+              require("neotest").run.run()
             end
-          end, { desc = "Test Menu (d=debug)" })
+          end, { desc = "Test: [t]est [d]ebug" })
 
           -- Ctrl+Shift+B: Toggle breakpoint
-          -- Ghostty CSI u encoding: \x1b[98;6u
           map({ "n", "i" }, "\x1b[98;6u", function()
             vim.cmd("stopinsert")
             require("dap").toggle_breakpoint()
+            vim.notify("Breakpoint toggled", vim.log.levels.INFO)
           end, { desc = "Toggle Breakpoint" })
         end,
       })
-
       return opts
     end,
   },
