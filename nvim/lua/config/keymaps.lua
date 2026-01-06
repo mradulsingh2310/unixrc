@@ -74,6 +74,16 @@ map("i", "<M-Left>", "<C-o>b", { desc = "Move word left" })
 map("i", "<M-Right>", "<C-o>w", { desc = "Move word right" })
 map("i", "<A-Left>", "<C-o>b", { desc = "Move word left" })
 map("i", "<A-Right>", "<C-o>w", { desc = "Move word right" })
+-- Terminal escape sequences for Option+Arrow (ESC+b and ESC+f)
+map("i", "\x1bb", "<C-o>b", { desc = "Move word left" })
+map("i", "\x1bf", "<C-o>w", { desc = "Move word right" })
+-- Also add for normal and visual mode
+map({ "n", "v" }, "<M-Left>", "b", { desc = "Move word left" })
+map({ "n", "v" }, "<M-Right>", "w", { desc = "Move word right" })
+map({ "n", "v" }, "<A-Left>", "b", { desc = "Move word left" })
+map({ "n", "v" }, "<A-Right>", "w", { desc = "Move word right" })
+map({ "n", "v" }, "\x1bb", "b", { desc = "Move word left" })
+map({ "n", "v" }, "\x1bf", "w", { desc = "Move word right" })
 
 -- Cmd+Left/Right = Move to beginning/end of line
 map("i", "<D-Left>", "<Home>", { desc = "Move to beginning of line" })
