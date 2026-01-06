@@ -1,97 +1,46 @@
--- Testing configuration with neotest for Java (and Python)
+-- Testing configuration
 -- Keybindings:
 --   Ctrl+Shift+T: Run test (then press 'd' for debug mode)
 --   Ctrl+Shift+B: Toggle breakpoint
 
+-- NOTE: neotest-java disabled due to startup assertion error
+-- To re-enable later, run :NeotestJava setup first
+
 return {
-  -- neotest-java adapter (must be separate plugin spec)
-  {
-    "rcasia/neotest-java",
-    ft = "java",
-    dependencies = {
-      "mfussenegger/nvim-jdtls",
-      "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
-      "theHamsta/nvim-dap-virtual-text",
-    },
-  },
-
-  -- neotest-python adapter
-  {
-    "nvim-neotest/neotest-python",
-    ft = "python",
-  },
-
-  -- Neotest core
-  {
-    "nvim-neotest/neotest",
-    dependencies = {
-      "nvim-neotest/nvim-nio",
-      "nvim-lua/plenary.nvim",
-      "antoinemadec/FixCursorHold.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = function()
-      require("neotest").setup({
-        -- Output panel at bottom (horizontal split inside Neovim)
-        output_panel = {
-          enabled = true,
-          open = "botright split | resize 15",
-        },
-        status = {
-          virtual_text = true,
-          signs = true,
-        },
-        output = {
-          enabled = true,
-          open_on_run = false,
-        },
-        summary = {
-          enabled = true,
-          open = "botright vsplit | vertical resize 40",
-        },
-        -- Adapters (required AFTER plugins load)
-        adapters = {
-          require("neotest-java")({}),
-          require("neotest-python")({
-            dap = { justMyCode = false },
-            runner = "pytest",
-          }),
-        },
-      })
-    end,
-    keys = {
-      { "<leader>tr", function() require("neotest").run.run() end, desc = "Run Nearest Test" },
-      { "<leader>tt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run File Tests" },
-      { "<leader>tT", function() require("neotest").run.run(vim.uv.cwd()) end, desc = "Run All Tests" },
-      { "<leader>tl", function() require("neotest").run.run_last() end, desc = "Run Last Test" },
-      { "<leader>ts", function() require("neotest").summary.toggle() end, desc = "Toggle Summary" },
-      { "<leader>to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show Output" },
-      { "<leader>tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle Output Panel" },
-      { "<leader>tS", function() require("neotest").run.stop() end, desc = "Stop Test" },
-      { "<leader>td", function() require("neotest").run.run({ strategy = "dap" }) end, desc = "Debug Nearest Test" },
-    },
-  },
-
-  -- Ctrl+Shift keybindings
+  -- Ctrl+Shift keybindings only (no neotest for now)
   {
     "folke/which-key.nvim",
     opts = function(_, opts)
       vim.api.nvim_create_autocmd("VimEnter", {
         callback = function()
-          -- Ctrl+Shift+T: Test menu
+          -- Ctrl+Shift+T: Run Maven test via terminal
           vim.keymap.set({ "n", "i" }, "\x1b[116;6u", function()
             vim.cmd("stopinsert")
             vim.api.nvim_echo({ { "[t]est  [d]ebug", "Question" } }, false, {})
             local char = vim.fn.getcharstr()
             vim.cmd("redraw")
 
-            if char == "d" then
-              require("neotest").output_panel.open()
-              require("neotest").run.run({ strategy = "dap" })
+            -- Get current file and derive test class
+            local file = vim.fn.expand("%:p")
+            local test_class = nil
+
+            -- If in main, find corresponding test
+            if file:match("/main/java/") then
+              local class_name = vim.fn.expand("%:t:r")
+              test_class = class_name .. "Test"
+            elseif file:match("/test/java/") then
+              test_class = vim.fn.expand("%:t:r")
+            end
+
+            if test_class then
+              local cmd = "mvn test -Dtest=" .. test_class
+              if char == "d" then
+                cmd = cmd .. " -Dmaven.surefire.debug"
+              end
+              -- Open terminal in horizontal split at bottom
+              vim.cmd("botright split | resize 15 | terminal " .. cmd)
             else
-              require("neotest").output_panel.open()
-              require("neotest").run.run()
+              vim.notify("Not in a Java source/test file", vim.log.levels.WARN)
             end
           end, { desc = "Test: [t]est [d]ebug" })
 
