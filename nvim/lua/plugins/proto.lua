@@ -7,7 +7,7 @@ return {
     end,
   },
 
-  -- Configure protols LSP (uses .protols.toml in project root for include paths)
+  -- Configure protols LSP (uses protols.toml in project root for include paths)
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -15,7 +15,7 @@ return {
         protols = {
           root_dir = function(fname)
             local util = require("lspconfig.util")
-            return util.root_pattern(".protols.toml", "buf.yaml", "buf.work.yaml", ".git")(fname)
+            return util.root_pattern("protols.toml", "buf.yaml", "buf.work.yaml", ".git")(fname)
           end,
         },
       },
