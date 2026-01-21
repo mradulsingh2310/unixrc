@@ -748,6 +748,14 @@ local function run_app()
     return
   end
 
+  -- Check if this is a multi-module project without module specified
+  local modules = detect_maven_modules(project_root)
+  if #modules > 0 and (not config.module or config.module == "") then
+    vim.notify("Multi-module project detected but no module specified. Press <leader>Jc to configure.", vim.log.levels.WARN)
+    show_config_ui()
+    return
+  end
+
   local working_dir = config.working_dir or project_root
   local mvn = vim.fn.filereadable(working_dir .. "/mvnw") == 1 and "./mvnw" or "mvn"
 
@@ -756,13 +764,16 @@ local function run_app()
     module_flag = " -pl " .. config.module
   end
 
+  -- Always specify main class explicitly
+  local main_class_opt = " -Dspring-boot.run.mainClass=" .. config.main_class
+
   local vm_opts = ""
   if config.vm_options and config.vm_options ~= "" then
     vm_opts = " -Dspring-boot.run.jvmArguments=\"" .. config.vm_options .. "\""
   end
 
   local env_prefix = build_env_prefix(config)
-  local cmd = env_prefix .. mvn .. module_flag .. " spring-boot:run" .. vm_opts
+  local cmd = env_prefix .. mvn .. module_flag .. " spring-boot:run" .. main_class_opt .. vm_opts
 
   vim.notify("Starting: " .. (config.name or config.main_class), vim.log.levels.INFO)
   run_in_terminal(cmd, working_dir)
