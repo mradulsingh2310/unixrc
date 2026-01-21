@@ -202,15 +202,24 @@ local function run_file()
 
   local config, project_root = get_project_config()
   local working_dir = config and config.working_dir or project_root or vim.fn.getcwd()
+  local file_path = vim.fn.expand("%:p")
 
   -- Use Maven exec plugin to run the class
   local mvn = vim.fn.filereadable(working_dir .. "/mvnw") == 1 and "./mvnw" or "mvn"
+
+  -- Detect module for multi-module projects
+  local module_flag = ""
+  local module = detect_module_from_path(file_path, working_dir)
+  if module then
+    module_flag = " -pl " .. module
+  end
+
   local vm_opts = ""
   if config and config.vm_options then
     vm_opts = " -Dexec.args=\"" .. config.vm_options .. "\""
   end
 
-  local cmd = mvn .. " compile exec:java -Dexec.mainClass=" .. class_name .. vm_opts .. " -q"
+  local cmd = mvn .. module_flag .. " compile exec:java -Dexec.mainClass=" .. class_name .. vm_opts
   vim.notify("Running: " .. class_name, vim.log.levels.INFO)
   run_in_terminal(cmd, working_dir)
 end
