@@ -348,8 +348,8 @@ local function show_config_ui()
     local height = #lines + 2
     local buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-    vim.api.nvim_buf_set_option(buf, "modifiable", false)
     vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+    vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
 
     local win_opts = {
       relative = "editor",
