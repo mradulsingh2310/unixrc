@@ -24,6 +24,7 @@ map("v", "\x1b[27;6;47~", "gc", { desc = "Toggle comment", remap = true })
 
 -- Cmd+p = Find files (Telescope)
 map("n", "\x1b[27;6;112~", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
+map("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 
 -- Cmd+shift+p = Command palette
 map("n", "\x1b[27;6;80~", "<cmd>Telescope commands<cr>", { desc = "Command palette" })
