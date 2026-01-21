@@ -145,6 +145,14 @@ end
 -- Main Functions
 -- ─────────────────────────────────────────
 
+-- Detect Maven module from file path
+local function detect_module_from_path(file_path, working_dir)
+  -- Extract the module name from paths like /project/module-name/src/...
+  local relative = file_path:gsub(working_dir .. "/", "")
+  local module = relative:match("^([^/]+)/src/")
+  return module
+end
+
 -- Run test for current file
 local function run_test()
   local filetype = vim.bo.filetype
@@ -161,10 +169,19 @@ local function run_test()
 
   local config, project_root = get_project_config()
   local working_dir = config and config.working_dir or project_root or vim.fn.getcwd()
+  local file_path = vim.fn.expand("%:p")
 
   -- Use Maven to run tests (use mvn if mvnw not available)
   local mvn = vim.fn.filereadable(working_dir .. "/mvnw") == 1 and "./mvnw" or "mvn"
-  local cmd = mvn .. " test -Dtest=" .. test_class .. " -q"
+
+  -- Detect module for multi-module projects
+  local module_flag = ""
+  local module = detect_module_from_path(file_path, working_dir)
+  if module then
+    module_flag = " -pl " .. module
+  end
+
+  local cmd = mvn .. module_flag .. " test -Dtest=" .. test_class
   vim.notify("Running test: " .. test_class, vim.log.levels.INFO)
   run_in_terminal(cmd, working_dir)
 end
