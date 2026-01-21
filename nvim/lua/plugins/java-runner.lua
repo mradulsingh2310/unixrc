@@ -209,6 +209,7 @@ local function run_app()
 
   local working_dir = config.working_dir or project_root
 
+  local mvn = vim.fn.filereadable(working_dir .. "/mvnw") == 1 and "./mvnw" or "mvn"
   local cmd
   if config.use_maven then
     -- Use Spring Boot Maven plugin
@@ -217,7 +218,7 @@ local function run_app()
       -- Convert VM options to spring-boot.run.jvmArguments format
       vm_opts = " -Dspring-boot.run.jvmArguments=\"" .. config.vm_options .. "\""
     end
-    cmd = "./mvnw spring-boot:run" .. vm_opts
+    cmd = mvn .. " spring-boot:run" .. vm_opts
   else
     -- Direct Java execution (requires classpath setup)
     local vm_opts = config.vm_options or ""
