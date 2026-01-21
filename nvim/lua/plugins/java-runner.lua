@@ -671,26 +671,32 @@ end
 -- Plugin Setup
 -- ─────────────────────────────────────────
 
+-- Create commands for the functions
+vim.api.nvim_create_user_command("JavaConfig", show_config_ui, { desc = "Open Java run configuration" })
+vim.api.nvim_create_user_command("JavaTest", run_test, { desc = "Run Java test" })
+vim.api.nvim_create_user_command("JavaRun", run_file, { desc = "Run Java file" })
+vim.api.nvim_create_user_command("JavaApp", run_app, { desc = "Run Spring app" })
+
 return {
+  -- Register keymaps with which-key for discoverability
   {
     "folke/which-key.nvim",
-    opts = function(_, opts)
-      vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function()
-          -- <leader>jc = Open run configuration
-          vim.keymap.set("n", "<leader>jc", show_config_ui, { desc = "Java: Config" })
-
-          -- <leader>jt = Run test
-          vim.keymap.set("n", "<leader>jt", run_test, { desc = "Java: Test" })
-
-          -- <leader>jr = Run current file
-          vim.keymap.set("n", "<leader>jr", run_file, { desc = "Java: Run file" })
-
-          -- <leader>ja = Run Spring app
-          vim.keymap.set("n", "<leader>ja", run_app, { desc = "Java: Run app" })
-        end,
-      })
-      return opts
-    end,
+    opts = {
+      spec = {
+        { "<leader>J", group = "Java", icon = "" },
+      },
+    },
+  },
+  -- Standalone config to set keymaps reliably
+  {
+    dir = vim.fn.stdpath("config") .. "/lua/plugins",
+    name = "java-runner-keys",
+    lazy = false,
+    keys = {
+      { "<leader>Jc", "<cmd>JavaConfig<cr>", desc = "Java: Config" },
+      { "<leader>Jt", "<cmd>JavaTest<cr>", desc = "Java: Test" },
+      { "<leader>Jr", "<cmd>JavaRun<cr>", desc = "Java: Run file" },
+      { "<leader>Ja", "<cmd>JavaApp<cr>", desc = "Java: Run app" },
+    },
   },
 }
