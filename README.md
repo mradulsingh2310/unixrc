@@ -238,6 +238,17 @@ Based on [LazyVim](https://www.lazyvim.org/) with custom extensions.
 | `]h` | Next hunk |
 | `[h` | Previous hunk |
 
+### Java (Space + J)
+
+| Keybinding | Command | Action |
+|------------|---------|--------|
+| `<leader>Jc` | `:JavaConfig` | Open run configuration (IntelliJ-style) |
+| `<leader>Jt` | `:JavaTest` | Run test for current file |
+| `<leader>Jr` | `:JavaRun` | Run current Java file |
+| `<leader>Ja` | `:JavaApp` | Run Spring Boot application |
+
+The Java runner stores per-project configurations in `.java-runner.json` at the project root.
+
 ### Buffers (Space + b)
 
 | Keybinding | Action |
@@ -379,7 +390,8 @@ unixrc/
 │           ├── autosave.lua
 │           ├── colorscheme.lua
 │           ├── dashboard.lua
-│           ├── java.lua
+│           ├── java.lua          # Java LSP config
+│           ├── java-runner.lua   # Java run configurations
 │           ├── noice.lua
 │           ├── proto.lua
 │           ├── search.lua
@@ -409,6 +421,10 @@ Files are automatically saved on:
 - Leaving buffer or focus
 
 ### Java Development
+- **Java Runner** - IntelliJ-style run configurations (`<leader>J`)
+  - Auto-detects JDKs, main classes, Maven modules
+  - Per-project config stored in `.java-runner.json`
+  - Run tests, files, or Spring Boot apps
 - Spotless auto-formatting on save
 - Enhanced import organization
 - Static member favorites for testing frameworks

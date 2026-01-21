@@ -104,19 +104,38 @@ end
 -- Project Detection
 -- ─────────────────────────────────────────
 
+-- Find the TOPMOST project root (parent project, not module)
+-- For multi-module Maven projects, keeps going up until no more pom.xml found
 local function find_project_root()
-  local markers = { "pom.xml", "build.gradle", "build.gradle.kts", ".git" }
+  local build_markers = { "pom.xml", "build.gradle", "build.gradle.kts" }
   local current_file = vim.fn.expand("%:p")
   local current_dir = vim.fn.fnamemodify(current_file, ":h")
+  local last_project_root = nil
 
   while current_dir ~= "/" do
-    for _, marker in ipairs(markers) do
-      if vim.fn.filereadable(current_dir .. "/" .. marker) == 1 or vim.fn.isdirectory(current_dir .. "/" .. marker) == 1 then
-        return current_dir
+    for _, marker in ipairs(build_markers) do
+      if vim.fn.filereadable(current_dir .. "/" .. marker) == 1 then
+        last_project_root = current_dir
+        break
       end
     end
     current_dir = vim.fn.fnamemodify(current_dir, ":h")
   end
+
+  -- If we found a project root, return it; otherwise fall back to git root or cwd
+  if last_project_root then
+    return last_project_root
+  end
+
+  -- Fallback: look for .git
+  current_dir = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":h")
+  while current_dir ~= "/" do
+    if vim.fn.isdirectory(current_dir .. "/.git") == 1 then
+      return current_dir
+    end
+    current_dir = vim.fn.fnamemodify(current_dir, ":h")
+  end
+
   return vim.fn.getcwd()
 end
 
