@@ -677,9 +677,8 @@ return {
     opts = function(_, opts)
       vim.api.nvim_create_autocmd("VimEnter", {
         callback = function()
-          -- Ctrl+o = Open run configuration
-          vim.keymap.set({ "n", "i" }, "\x1b[111;5u", function()
-            vim.cmd("stopinsert")
+          -- <leader>co = Open run configuration
+          vim.keymap.set("n", "<leader>co", function()
             show_config_ui()
           end, { desc = "Java: Run configuration" })
 
