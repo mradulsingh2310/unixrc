@@ -162,8 +162,9 @@ local function run_test()
   local config, project_root = get_project_config()
   local working_dir = config and config.working_dir or project_root or vim.fn.getcwd()
 
-  -- Use Maven to run tests
-  local cmd = "./mvnw test -Dtest=" .. test_class .. " -q"
+  -- Use Maven to run tests (use mvn if mvnw not available)
+  local mvn = vim.fn.filereadable(working_dir .. "/mvnw") == 1 and "./mvnw" or "mvn"
+  local cmd = mvn .. " test -Dtest=" .. test_class .. " -q"
   vim.notify("Running test: " .. test_class, vim.log.levels.INFO)
   run_in_terminal(cmd, working_dir)
 end
