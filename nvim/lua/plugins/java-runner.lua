@@ -1,9 +1,9 @@
 -- Java Runner Configuration
--- Keybindings:
---   <leader>co: Open run configuration editor
---   Cmd+u: Run test for current Java file
---   Cmd+r: Run current Java file
---   Cmd+Shift+r: Run Spring application
+-- Keybindings (all under <leader>j for Java):
+--   <leader>jc: Open run configuration editor
+--   <leader>jt: Run test for current Java file
+--   <leader>jr: Run current Java file
+--   <leader>ja: Run Spring application
 
 local M = {}
 
