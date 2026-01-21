@@ -1,5 +1,5 @@
 -- Python Development Configuration
--- Ruff (native LSP) + ty (type checker) + venv detection
+-- Ruff (native LSP) + venv detection
 
 -- Utility: Find Python virtual environment
 local function find_venv()
@@ -21,15 +21,6 @@ local function find_venv()
     end
   end
 
-  -- Check for Poetry virtualenv
-  local poetry_venv = vim.fn.trim(vim.fn.system("cd " .. cwd .. " && poetry env info -p 2>/dev/null"))
-  if vim.v.shell_error == 0 and poetry_venv ~= "" then
-    return {
-      path = poetry_venv,
-      python = poetry_venv .. "/bin/python",
-    }
-  end
-
   -- Check VIRTUAL_ENV environment variable
   local env_venv = vim.env.VIRTUAL_ENV
   if env_venv and vim.fn.isdirectory(env_venv) == 1 then
@@ -42,9 +33,6 @@ local function find_venv()
   return nil
 end
 
--- Make find_venv available globally for other plugins
-_G.find_python_venv = find_venv
-
 return {
   -- Configure LSP servers for Python
   {
@@ -52,36 +40,15 @@ return {
     opts = {
       servers = {
         -- Ruff native language server (replaces ruff-lsp)
-        -- Handles linting and formatting
         ruff = {
           init_options = {
             settings = {
               lineLength = 100,
-              -- Use project's pyproject.toml/ruff.toml if present
             },
           },
         },
 
-        -- ty - Astral's fast type checker (from Astral, makers of Ruff)
-        ty = {
-          -- ty is installed via: uv tool install ty OR pipx install ty
-          cmd = { "ty", "server" },
-          filetypes = { "python" },
-          root_dir = function(fname)
-            return require("lspconfig.util").root_pattern(
-              "pyproject.toml",
-              "setup.py",
-              "setup.cfg",
-              "requirements.txt",
-              ".git"
-            )(fname) or vim.fn.getcwd()
-          end,
-          settings = {
-            ty = {},
-          },
-        },
-
-        -- Disable basedpyright type checking - let ty handle it
+        -- Configure basedpyright with venv support
         basedpyright = {
           settings = {
             basedpyright = {
@@ -89,81 +56,33 @@ return {
             },
             python = {
               analysis = {
-                -- Disable type checking - ty handles it
-                typeCheckingMode = "off",
-                -- Still useful for go-to-definition, hover docs
+                typeCheckingMode = "basic",
                 diagnosticMode = "openFilesOnly",
               },
             },
           },
         },
       },
-
-      -- Custom setup for servers
-      setup = {
-        -- Detect and use project virtual environment for Ruff
-        ruff = function(_, opts)
-          local lspconfig = require("lspconfig")
-          local venv = find_venv()
-
-          if venv then
-            opts.init_options = opts.init_options or {}
-            opts.init_options.settings = opts.init_options.settings or {}
-            opts.init_options.settings.interpreter = { venv.python }
-          end
-
-          lspconfig.ruff.setup(opts)
-          return true
-        end,
-
-        -- Configure ty with venv detection
-        ty = function(_, opts)
-          local lspconfig = require("lspconfig")
-          local venv = find_venv()
-
-          if venv then
-            opts.settings = opts.settings or {}
-            opts.settings.ty = opts.settings.ty or {}
-            opts.settings.ty.pythonEnvironment = venv.path
-          end
-
-          lspconfig.ty.setup(opts)
-          return true
-        end,
-
-        -- Configure basedpyright with venv
-        basedpyright = function(_, opts)
-          local lspconfig = require("lspconfig")
-          local venv = find_venv()
-
-          if venv then
-            opts.settings = opts.settings or {}
-            opts.settings.python = opts.settings.python or {}
-            opts.settings.python.venvPath = vim.fn.fnamemodify(venv.path, ":h")
-            opts.settings.python.pythonPath = venv.python
-          end
-
-          lspconfig.basedpyright.setup(opts)
-          return true
-        end,
-      },
     },
   },
 
-  -- Disable Ruff's hover in favor of ty/pyright
+  -- Auto-detect venv and configure LSP on attach
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      local on_attach = opts.on_attach
-      opts.on_attach = function(client, bufnr)
-        if client.name == "ruff" then
-          -- Disable hover - let ty or pyright handle it
-          client.server_capabilities.hoverProvider = false
-        end
-        if on_attach then
-          on_attach(client, bufnr)
-        end
-      end
+      -- Set up an autocmd to configure venv when LSP attaches
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if not client then return end
+
+          -- Disable Ruff hover (let basedpyright handle it)
+          if client.name == "ruff" then
+            client.server_capabilities.hoverProvider = false
+          end
+        end,
+      })
+      return opts
     end,
   },
 
@@ -185,15 +104,5 @@ return {
         python = { "ruff_format", "ruff_organize_imports" },
       },
     },
-  },
-
-  -- Treesitter for Python
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed or {}, {
-        "python",
-      })
-    end,
   },
 }
