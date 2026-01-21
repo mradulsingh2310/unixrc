@@ -720,12 +720,18 @@ local function run_file()
   run_in_terminal(cmd, working_dir)
 end
 
--- Run Spring application
+-- Run Spring application (works without file open - uses saved/auto-detected config)
 local function run_app()
-  local config, project_root = get_project_config()
+  local project_root = find_project_root()
+  local config = load_project_config(project_root)
 
-  if not config or not config.main_class or config.main_class == "" then
-    vim.notify("No run configuration found. Press <leader>Jc to configure.", vim.log.levels.WARN)
+  -- If no saved config, try to auto-detect
+  if not config then
+    config = create_default_config(project_root)
+  end
+
+  if not config.main_class or config.main_class == "" then
+    vim.notify("No main class found. Press <leader>Jc to configure.", vim.log.levels.WARN)
     show_config_ui()
     return
   end
