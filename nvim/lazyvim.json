@@ -20,8 +20,7 @@
     "lazyvim.plugins.extras.lang.markdown",
     "lazyvim.plugins.extras.lang.python",
     "lazyvim.plugins.extras.lang.toml",
-    "lazyvim.plugins.extras.lang.yaml",
-    "lazyvim.plugins.extras.test.core"
+    "lazyvim.plugins.extras.lang.yaml"
   ],
   "install_version": 8,
   "news": {
