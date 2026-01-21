@@ -187,12 +187,13 @@ local function run_file()
   local working_dir = config and config.working_dir or project_root or vim.fn.getcwd()
 
   -- Use Maven exec plugin to run the class
+  local mvn = vim.fn.filereadable(working_dir .. "/mvnw") == 1 and "./mvnw" or "mvn"
   local vm_opts = ""
   if config and config.vm_options then
     vm_opts = " -Dexec.args=\"" .. config.vm_options .. "\""
   end
 
-  local cmd = "./mvnw compile exec:java -Dexec.mainClass=" .. class_name .. vm_opts .. " -q"
+  local cmd = mvn .. " compile exec:java -Dexec.mainClass=" .. class_name .. vm_opts .. " -q"
   vim.notify("Running: " .. class_name, vim.log.levels.INFO)
   run_in_terminal(cmd, working_dir)
 end
