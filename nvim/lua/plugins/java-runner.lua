@@ -1,9 +1,10 @@
 -- Java Runner Configuration
--- Keybindings (all under <leader>j for Java):
---   <leader>jc: Open run configuration editor
---   <leader>jt: Run test for current Java file
---   <leader>jr: Run current Java file
---   <leader>ja: Run Spring application
+-- Keybindings (all under <leader>J for Java):
+--   <leader>Jc: Open run configuration editor
+--   <leader>Jt: Run test for current Java file
+--   <leader>Jr: Run current Java file
+--   <leader>Ja: Run Spring application
+-- Commands: :JavaConfig, :JavaTest, :JavaRun, :JavaApp
 
 local M = {}
 
