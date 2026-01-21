@@ -677,28 +677,17 @@ return {
     opts = function(_, opts)
       vim.api.nvim_create_autocmd("VimEnter", {
         callback = function()
-          -- <leader>co = Open run configuration
-          vim.keymap.set("n", "<leader>co", function()
-            show_config_ui()
-          end, { desc = "Java: Run configuration" })
+          -- <leader>jc = Open run configuration
+          vim.keymap.set("n", "<leader>jc", show_config_ui, { desc = "Java: Config" })
 
-          -- Cmd+u = Run test
-          vim.keymap.set({ "n", "i" }, "\x1b[27;6;117~", function()
-            vim.cmd("stopinsert")
-            run_test()
-          end, { desc = "Java: Run test" })
+          -- <leader>jt = Run test
+          vim.keymap.set("n", "<leader>jt", run_test, { desc = "Java: Test" })
 
-          -- Cmd+r = Run current file
-          vim.keymap.set({ "n", "i" }, "\x1b[27;6;114~", function()
-            vim.cmd("stopinsert")
-            run_file()
-          end, { desc = "Java: Run file" })
+          -- <leader>jr = Run current file
+          vim.keymap.set("n", "<leader>jr", run_file, { desc = "Java: Run file" })
 
-          -- Cmd+Shift+r = Run Spring app
-          vim.keymap.set({ "n", "i" }, "\x1b[27;6;82~", function()
-            vim.cmd("stopinsert")
-            run_app()
-          end, { desc = "Java: Run app" })
+          -- <leader>ja = Run Spring app
+          vim.keymap.set("n", "<leader>ja", run_app, { desc = "Java: Run app" })
         end,
       })
       return opts
