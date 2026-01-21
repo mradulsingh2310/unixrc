@@ -1,6 +1,6 @@
 -- Java Runner Configuration
 -- Keybindings:
---   Ctrl+o: Open run configuration editor
+--   <leader>co: Open run configuration editor
 --   Cmd+u: Run test for current Java file
 --   Cmd+r: Run current Java file
 --   Cmd+Shift+r: Run Spring application
