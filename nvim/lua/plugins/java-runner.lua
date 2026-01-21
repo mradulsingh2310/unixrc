@@ -643,7 +643,7 @@ local function run_app()
   local config, project_root = get_project_config()
 
   if not config or not config.main_class or config.main_class == "" then
-    vim.notify("No run configuration found. Press <leader>jc to configure.", vim.log.levels.WARN)
+    vim.notify("No run configuration found. Press <leader>Jc to configure.", vim.log.levels.WARN)
     show_config_ui()
     return
   end
