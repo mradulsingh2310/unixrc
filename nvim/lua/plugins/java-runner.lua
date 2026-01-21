@@ -691,6 +691,12 @@ end
 
 -- Run current Java file
 local function run_file()
+  local current_file = vim.fn.expand("%:p")
+  if current_file == "" then
+    vim.notify("No file open. Open a Java file first.", vim.log.levels.WARN)
+    return
+  end
+
   if vim.bo.filetype ~= "java" then
     vim.notify("Not a Java file", vim.log.levels.WARN)
     return
