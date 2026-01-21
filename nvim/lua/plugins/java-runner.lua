@@ -556,6 +556,10 @@ end
 local function get_project_config()
   local project_root = find_project_root()
   local config = load_project_config(project_root)
+  -- If no config exists, create default (allows running without file open)
+  if not config then
+    config = create_default_config(project_root)
+  end
   return config, project_root
 end
 
