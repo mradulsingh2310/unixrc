@@ -108,11 +108,24 @@ end
 -- For multi-module Maven projects, keeps going up until no more pom.xml found
 local function find_project_root()
   local build_markers = { "pom.xml", "build.gradle", "build.gradle.kts" }
+
+  -- Start from current file's directory, or cwd if no file open
   local current_file = vim.fn.expand("%:p")
-  local current_dir = vim.fn.fnamemodify(current_file, ":h")
+  local current_dir
+  if current_file == "" or current_file == nil then
+    current_dir = vim.fn.getcwd()
+  else
+    current_dir = vim.fn.fnamemodify(current_file, ":h")
+  end
+
+  -- Handle empty or invalid directory
+  if current_dir == "" or current_dir == nil then
+    current_dir = vim.fn.getcwd()
+  end
+
   local last_project_root = nil
 
-  while current_dir ~= "/" do
+  while current_dir ~= "/" and current_dir ~= "" do
     for _, marker in ipairs(build_markers) do
       if vim.fn.filereadable(current_dir .. "/" .. marker) == 1 then
         last_project_root = current_dir
@@ -127,9 +140,9 @@ local function find_project_root()
     return last_project_root
   end
 
-  -- Fallback: look for .git
-  current_dir = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":h")
-  while current_dir ~= "/" do
+  -- Fallback: look for .git starting from cwd
+  current_dir = vim.fn.getcwd()
+  while current_dir ~= "/" and current_dir ~= "" do
     if vim.fn.isdirectory(current_dir .. "/.git") == 1 then
       return current_dir
     end
