@@ -1,6 +1,6 @@
 -- Python Development Configuration
 return {
-  -- Configure Ruff LSP
+  -- Configure LSP servers
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -9,6 +9,18 @@ return {
           init_options = {
             settings = {
               lineLength = 100,
+            },
+          },
+        },
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              disableOrganizeImports = true,
+            },
+            python = {
+              analysis = {
+                typeCheckingMode = "basic",
+              },
             },
           },
         },
