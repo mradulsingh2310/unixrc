@@ -213,12 +213,16 @@ local function run_app()
   local cmd
   if config.use_maven then
     -- Use Spring Boot Maven plugin
+    local module_flag = ""
+    if config.classpath_module then
+      module_flag = " -pl " .. config.classpath_module
+    end
     local vm_opts = ""
     if config.vm_options then
       -- Convert VM options to spring-boot.run.jvmArguments format
       vm_opts = " -Dspring-boot.run.jvmArguments=\"" .. config.vm_options .. "\""
     end
-    cmd = mvn .. " spring-boot:run" .. vm_opts
+    cmd = mvn .. module_flag .. " spring-boot:run" .. vm_opts
   else
     -- Direct Java execution (requires classpath setup)
     local vm_opts = config.vm_options or ""
