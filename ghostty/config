@@ -79,8 +79,8 @@ keybind = super+shift+z=text:\x1b[27;6;90~
 # Cmd+/ = Comment toggle
 keybind = super+slash=text:\x1b[27;6;47~
 
-# Cmd+p = Find files
-keybind = super+p=text:\x1b[27;6;112~
+# Cmd+p = Find files (sends Ctrl+P which works through tmux)
+keybind = super+p=text:\x10
 
 # Cmd+shift+p = Command palette
 keybind = super+shift+p=text:\x1b[27;6;80~
