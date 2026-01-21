@@ -124,9 +124,6 @@ keybind = super+r=text:\x1b[27;6;114~
 # Cmd+Shift+r = Run Spring app
 keybind = super+shift+r=text:\x1b[27;6;82~
 
-# Ctrl+o = Open Java run configuration
-keybind = ctrl+o=text:\x1b[111;5u
-
 # Theme - Catppuccin Mocha
 background = 1e1e2e
 foreground = cdd6f4
