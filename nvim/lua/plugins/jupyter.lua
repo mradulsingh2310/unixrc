@@ -4,8 +4,8 @@
 return {
   {
     "kiyoon/jupynium.nvim",
-    -- Use pipx for macOS with Homebrew Python (avoids externally-managed-environment error)
-    build = "pipx install . --force",
+    -- Use uv to install in isolated environment (no system Python modification)
+    build = "uv tool install . --force",
     dependencies = {
       "rcarriga/nvim-notify", -- Optional: for notifications
       "stevearc/dressing.nvim", -- Optional: for better UI
