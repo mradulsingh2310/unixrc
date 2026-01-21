@@ -240,9 +240,9 @@ end
 -- Configuration UI
 -- ─────────────────────────────────────────
 
-local function show_config_ui()
-  local project_root = find_project_root()
-  local config = load_project_config(project_root) or {
+-- Auto-detect and prefill config for new projects
+local function create_default_config(project_root)
+  local config = {
     name = vim.fn.fnamemodify(project_root, ":t"),
     main_class = "",
     module = "",
@@ -253,6 +253,43 @@ local function show_config_ui()
     env_vars = {},
     base_package = "",
   }
+
+  -- Try to auto-detect main class and module
+  local main_classes = find_main_classes(project_root)
+  if #main_classes > 0 then
+    -- Prefer *App or *Application classes
+    for _, mc in ipairs(main_classes) do
+      if mc.class:match("App$") or mc.class:match("Application$") then
+        config.main_class = mc.class
+        config.module = mc.module or ""
+        config.name = mc.class:match("([^%.]+)$") or config.name
+        break
+      end
+    end
+    -- If no App class found, use the first one
+    if config.main_class == "" then
+      config.main_class = main_classes[1].class
+      config.module = main_classes[1].module or ""
+    end
+  end
+
+  -- Auto-detect base package
+  local packages = detect_base_packages(project_root)
+  if #packages > 0 then
+    config.base_package = packages[1]
+  end
+
+  return config
+end
+
+local function show_config_ui()
+  local project_root = find_project_root()
+  local config = load_project_config(project_root)
+
+  -- If no saved config, create one with auto-detected values
+  if not config then
+    config = create_default_config(project_root)
+  end
 
   local function refresh_menu()
     local menu_items = {
