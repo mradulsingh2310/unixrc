@@ -336,6 +336,7 @@ local function show_config_ui()
     local buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
     vim.api.nvim_buf_set_option(buf, "modifiable", false)
+    vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
 
     local win_opts = {
       relative = "editor",
@@ -348,7 +349,15 @@ local function show_config_ui()
     }
 
     local win = vim.api.nvim_open_win(buf, true, win_opts)
+
+    -- Set solid background (non-transparent)
+    vim.api.nvim_win_set_option(win, "winblend", 0)
+    vim.api.nvim_win_set_option(win, "winhighlight", "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel")
     vim.api.nvim_win_set_option(win, "cursorline", true)
+
+    -- Set buffer-local highlight for solid background
+    vim.api.nvim_set_hl(0, "JavaRunnerFloat", { bg = "#1e1e2e", fg = "#cdd6f4" })
+    vim.api.nvim_win_set_option(win, "winhighlight", "Normal:JavaRunnerFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel")
 
     -- Key handlers
     local function close_win()
