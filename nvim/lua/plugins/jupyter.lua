@@ -1,45 +1,72 @@
--- Jupyter Notebook Support
--- nvim-jupyter-client: Fast native .ipynb editing (no external conversion)
--- Jupynium: Browser-synced execution (optional)
+-- Jupyter Notebook Support with Molten
+-- Run code cells, view outputs inline, image support
 
 return {
-  -- Native .ipynb editing - fast, no external tools needed
+  -- Molten: Execute code with Jupyter kernels
   {
-    "geg2102/nvim-jupyter-client",
-    ft = { "ipynb" },
-    config = function()
-      require("nvim-jupyter-client").setup({})
+    "benlubas/molten-nvim",
+    version = "^1.0.0",
+    build = ":UpdateRemotePlugins",
+    dependencies = {
+      "3rd/image.nvim", -- For image output
+    },
+    init = function()
+      -- Molten settings
+      vim.g.molten_image_provider = "image.nvim"
+      vim.g.molten_output_win_max_height = 20
+      vim.g.molten_auto_open_output = false
+      vim.g.molten_virt_text_output = true
+      vim.g.molten_virt_lines_off_by_1 = true
     end,
     keys = {
-      { "<leader>ja", "<cmd>JupyterAddCellBelow<cr>", desc = "Add cell below", ft = "ipynb" },
-      { "<leader>jA", "<cmd>JupyterAddCellAbove<cr>", desc = "Add cell above", ft = "ipynb" },
-      { "<leader>jd", "<cmd>JupyterRemoveCell<cr>", desc = "Delete cell", ft = "ipynb" },
-      { "<leader>jt", "<cmd>JupyterConvertCellType<cr>", desc = "Toggle cell type", ft = "ipynb" },
-      { "<leader>jm", "<cmd>JupyterMergeCellBelow<cr>", desc = "Merge cell below", ft = "ipynb" },
-      { "<leader>jM", "<cmd>JupyterMergeCellAbove<cr>", desc = "Merge cell above", ft = "ipynb" },
+      { "<leader>ji", "<cmd>MoltenInit<cr>", desc = "Init kernel" },
+      { "<leader>jl", "<cmd>MoltenEvaluateLine<cr>", desc = "Eval line" },
+      { "<leader>jv", ":<C-u>MoltenEvaluateVisual<cr>", desc = "Eval visual", mode = "v" },
+      { "<leader>jc", "<cmd>MoltenReevaluateCell<cr>", desc = "Eval cell" },
+      { "<leader>jo", "<cmd>MoltenShowOutput<cr>", desc = "Show output" },
+      { "<leader>jh", "<cmd>MoltenHideOutput<cr>", desc = "Hide output" },
+      { "<leader>jd", "<cmd>MoltenDelete<cr>", desc = "Delete cell" },
     },
   },
 
-  -- Jupynium: For executing cells via browser (optional)
+  -- Image rendering (for plot outputs)
   {
-    "kiyoon/jupynium.nvim",
-    build = "uv tool install . --force",
-    cmd = { "JupyniumStartAndAttachToServer", "JupyniumStartSync" },
-    config = function()
-      require("jupynium").setup({
-        python_host = vim.g.python3_host_prog or "python3",
-        default_notebook_URL = "localhost:8888/nbclassic",
-        auto_download_ipynb = true,
-        use_default_keybindings = true,
-        textobjects = { use_default_keybindings = true },
-      })
-    end,
+    "3rd/image.nvim",
+    opts = {
+      backend = "kitty", -- or "ueberzug" for X11
+      integrations = {
+        markdown = { enabled = true },
+      },
+      max_width = 100,
+      max_height = 12,
+      window_overlap_clear_enabled = true,
+    },
+  },
+
+  -- Quarto for notebook editing + LSP in code cells
+  {
+    "quarto-dev/quarto-nvim",
+    dependencies = {
+      "jmbuhr/otter.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    ft = { "quarto", "markdown" },
+    opts = {
+      lspFeatures = {
+        enabled = true,
+        languages = { "python" },
+        chunks = "all",
+        diagnostics = { enabled = true },
+        completion = { enabled = true },
+      },
+      codeRunner = {
+        enabled = true,
+        default_method = "molten",
+      },
+    },
     keys = {
-      { "<leader>js", "<cmd>JupyniumStartAndAttachToServer<cr>", desc = "Start Jupynium" },
-      { "<leader>jS", "<cmd>JupyniumStartSync<cr>", desc = "Sync to browser" },
-      { "<leader>jx", "<cmd>JupyniumExecuteSelectedCells<cr>", desc = "Execute cell", mode = { "n", "x" } },
-      { "<leader>jK", "<cmd>JupyniumKernelRestart<cr>", desc = "Restart kernel" },
-      { "<leader>jI", "<cmd>JupyniumKernelInterrupt<cr>", desc = "Interrupt kernel" },
+      { "<leader>jq", "<cmd>QuartoPreview<cr>", desc = "Quarto preview" },
+      { "<leader>jr", "<cmd>QuartoSendAbove<cr>", desc = "Run cells above" },
     },
   },
 
