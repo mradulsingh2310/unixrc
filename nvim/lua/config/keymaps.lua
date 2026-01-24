@@ -61,8 +61,8 @@ map("i", "<A-BS>", "<C-W>", { desc = "Delete word backwards" })
 
 -- Cmd+Backspace = Delete to beginning of line (like Ctrl-U)
 map("i", "<D-BS>", "<C-U>", { desc = "Delete to beginning of line" })
--- Ghostty escape sequence for Cmd+Backspace (Super+Backspace)
-map("i", "\x1b[127;6u", "<C-U>", { desc = "Delete to beginning of line" })
+-- Ghostty escape sequence disabled - breaks Telescope input
+-- map("i", "\x1b[127;6u", "<C-U>", { desc = "Delete to beginning of line" })
 
 -- Option+Delete (forward delete word) - delete word forwards
 map("i", "<M-Del>", "<C-o>dw", { desc = "Delete word forwards" })
