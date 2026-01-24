@@ -10,7 +10,7 @@ local map = vim.keymap.set
 
 -- Cmd+s = Save
 map({ "n", "i", "v" }, "<M-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
-map({ "n", "i", "v" }, "\x1b[27;6;115~", "<cmd>w<cr><esc>", { desc = "Save file" })
+-- REMOVED: Ghostty escape sequence - causes issues with Telescope
 
 -- Cmd+z = Undo
 map({ "n", "i" }, "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
