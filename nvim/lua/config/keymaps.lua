@@ -32,8 +32,8 @@ map("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 map("n", "\x1b[27;6;80~", "<cmd>Telescope commands<cr>", { desc = "Command palette" })
 
 -- Cmd+b = Toggle file explorer (Neo-tree)
-map({ "n", "i", "v", "t" }, "\x1b[27;6;98~", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
-map({ "n", "i", "v", "t" }, "<D-b>", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
+map({ "n", "v" }, "\x1b[27;6;98~", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
+map({ "n", "v" }, "<D-b>", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
 
 -- Cmd+j/k/l = Navigate panes
 map("n", "\x1b[27;6;106~", "<C-w>j", { desc = "Navigate down" })
