@@ -9,7 +9,7 @@ local map = vim.keymap.set
 -- ─────────────────────────────────────────
 
 -- Cmd+s = Save
-map({ "n", "i", "v" }, "<M-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
+map({ "n", "v" }, "<M-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 -- REMOVED: Ghostty escape sequence - causes issues with Telescope
 
 -- Cmd+z = Undo
