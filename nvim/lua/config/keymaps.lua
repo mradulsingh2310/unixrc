@@ -26,9 +26,7 @@ map("v", "\x1b[27;6;47~", "gc", { desc = "Toggle comment", remap = true })
 map("n", "\x1b[27;6;112~", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 map("n", "<D-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 map("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
--- Also map for insert mode
-map("i", "\x1b[27;6;112~", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
-map("i", "<D-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
+-- REMOVED: insert mode Telescope mappings - causes issues with typing in Telescope prompt
 
 -- Cmd+shift+p = Command palette
 map("n", "\x1b[27;6;80~", "<cmd>Telescope commands<cr>", { desc = "Command palette" })
