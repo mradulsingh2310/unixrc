@@ -13,7 +13,7 @@ map({ "n", "i", "v" }, "<M-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 -- REMOVED: Ghostty escape sequence - causes issues with Telescope
 
 -- Cmd+z = Undo
-map({ "n", "i" }, "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
+map("n", "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
 
 -- Cmd+shift+z = Redo
 map({ "n", "i" }, "\x1b[27;6;90~", "<cmd>redo<cr>", { desc = "Redo" })
