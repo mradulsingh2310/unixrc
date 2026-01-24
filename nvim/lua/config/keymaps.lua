@@ -13,10 +13,10 @@ map({ "n", "v" }, "<M-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 map({ "n", "v" }, "\x1b[27;6;115~", "<cmd>w<cr><esc>", { desc = "Save file" })
 
 -- Cmd+z = Undo
-map({ "n", "i" }, "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
+map("n", "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
 
 -- Cmd+shift+z = Redo
-map({ "n", "i" }, "\x1b[27;6;90~", "<cmd>redo<cr>", { desc = "Redo" })
+map("n", "\x1b[27;6;90~", "<cmd>redo<cr>", { desc = "Redo" })
 
 -- Cmd+/ = Comment toggle (using Comment.nvim or native)
 map("n", "\x1b[27;6;47~", "gcc", { desc = "Toggle comment", remap = true })
