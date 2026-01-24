@@ -8,15 +8,15 @@ local map = vim.keymap.set
 -- Cmd Keybindings (via Ghostty escape sequences)
 -- ─────────────────────────────────────────
 
--- Cmd+s = Save
+-- Cmd+s = Save (no insert mode for escape sequences - breaks Telescope)
 map({ "n", "v" }, "<M-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
--- REMOVED: Ghostty escape sequence - causes issues with Telescope
+map({ "n", "v" }, "\x1b[27;6;115~", "<cmd>w<cr><esc>", { desc = "Save file" })
 
 -- Cmd+z = Undo
-map("n", "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
+map({ "n", "i" }, "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
 
 -- Cmd+shift+z = Redo
-map("n", "\x1b[27;6;90~", "<cmd>redo<cr>", { desc = "Redo" })
+map({ "n", "i" }, "\x1b[27;6;90~", "<cmd>redo<cr>", { desc = "Redo" })
 
 -- Cmd+/ = Comment toggle (using Comment.nvim or native)
 map("n", "\x1b[27;6;47~", "gcc", { desc = "Toggle comment", remap = true })
@@ -26,14 +26,16 @@ map("v", "\x1b[27;6;47~", "gc", { desc = "Toggle comment", remap = true })
 map("n", "\x1b[27;6;112~", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 map("n", "<D-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 map("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
--- REMOVED: insert mode Telescope mappings - causes issues with typing in Telescope prompt
+-- Also map for insert mode
+map("i", "\x1b[27;6;112~", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
+map("i", "<D-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
 
 -- Cmd+shift+p = Command palette
 map("n", "\x1b[27;6;80~", "<cmd>Telescope commands<cr>", { desc = "Command palette" })
 
 -- Cmd+b = Toggle file explorer (Neo-tree)
-map({ "n", "v" }, "\x1b[27;6;98~", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
-map({ "n", "v" }, "<D-b>", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
+map({ "n", "i", "v", "t" }, "\x1b[27;6;98~", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
+map({ "n", "i", "v", "t" }, "<D-b>", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
 
 -- Cmd+j/k/l = Navigate panes
 map("n", "\x1b[27;6;106~", "<C-w>j", { desc = "Navigate down" })
