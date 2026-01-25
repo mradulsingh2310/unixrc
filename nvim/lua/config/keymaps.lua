@@ -31,7 +31,7 @@ map("i", "\x1b[27;6;112~", "<cmd>FzfLua files<cr>", { desc = "Find files" })
 map("i", "<D-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
 
 -- Cmd+shift+p = Command palette
-map("n", "\x1b[27;6;80~", "<cmd>Telescope commands<cr>", { desc = "Command palette" })
+map("n", "\x1b[27;6;80~", "<cmd>FzfLua commands<cr>", { desc = "Command palette" })
 
 -- Cmd+b = Toggle file explorer (Neo-tree)
 map({ "n", "i", "v", "t" }, "\x1b[27;6;98~", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
@@ -46,7 +46,7 @@ map("n", "\x1b[27;6;108~", "<C-w>l", { desc = "Navigate right" })
 map("n", "\x1b[27;6;110~", "<cmd>enew<cr>", { desc = "New buffer" })
 
 -- Cmd+o = Open file
-map("n", "\x1b[27;6;111~", "<cmd>Telescope find_files<cr>", { desc = "Open file" })
+map("n", "\x1b[27;6;111~", "<cmd>FzfLua files<cr>", { desc = "Open file" })
 
 -- Cmd+, = Open config
 map("n", "\x1b[27;6;44~", "<cmd>e ~/.config/nvim/init.lua<cr>", { desc = "Open config" })
