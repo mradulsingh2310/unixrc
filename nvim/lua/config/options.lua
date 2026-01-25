@@ -5,8 +5,8 @@
 -- Python3 provider for Neovim (needed for molten-nvim)
 vim.g.python3_host_prog = "/opt/homebrew/bin/python3"
 
--- Use Telescope instead of fzf-lua
-vim.g.lazyvim_picker = "telescope"
+-- Use fzf-lua instead of telescope
+vim.g.lazyvim_picker = "fzf"
 
 local opt = vim.opt
 
