@@ -22,13 +22,13 @@ map({ "n", "i" }, "\x1b[27;6;90~", "<cmd>redo<cr>", { desc = "Redo" })
 map("n", "\x1b[27;6;47~", "gcc", { desc = "Toggle comment", remap = true })
 map("v", "\x1b[27;6;47~", "gc", { desc = "Toggle comment", remap = true })
 
--- Cmd+p = Find files (Telescope) - multiple fallbacks
-map("n", "\x1b[27;6;112~", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
-map("n", "<D-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
-map("n", "<C-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
+-- Cmd+p = Find files (fzf-lua) - multiple fallbacks
+map("n", "\x1b[27;6;112~", "<cmd>FzfLua files<cr>", { desc = "Find files" })
+map("n", "<D-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
+map("n", "<C-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
 -- Also map for insert mode
-map("i", "\x1b[27;6;112~", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
-map("i", "<D-p>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
+map("i", "\x1b[27;6;112~", "<cmd>FzfLua files<cr>", { desc = "Find files" })
+map("i", "<D-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
 
 -- Cmd+shift+p = Command palette
 map("n", "\x1b[27;6;80~", "<cmd>Telescope commands<cr>", { desc = "Command palette" })

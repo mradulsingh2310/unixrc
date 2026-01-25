@@ -1,11 +1,14 @@
 return {
-  "nvim-telescope/telescope.nvim",
+  "ibhagwan/fzf-lua",
   keys = {
-    { "<C-p>", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
+    { "<C-p>", "<cmd>FzfLua files<cr>", desc = "Find Files" },
   },
   opts = {
     defaults = {
-      winblend = 0,
+      winopts = {
+        height = 0.8,
+        width = 0.8,
+      },
     },
   },
 }
