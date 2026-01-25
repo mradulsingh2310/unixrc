@@ -39,9 +39,6 @@ return {
         notify = true,
         mini = true,
         dashboard = true,
-        telescope = {
-          enabled = true,
-        },
         which_key = true,
         indent_blankline = {
           enabled = true,
