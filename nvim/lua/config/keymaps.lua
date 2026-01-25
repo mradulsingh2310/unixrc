@@ -97,8 +97,6 @@ map("i", "<D-Right>", "<End>", { desc = "Move to end of line" })
 -- Better defaults
 -- ─────────────────────────────────────────
 
--- Navigate windows with Ctrl+h/j/k/l (handled by tmux-navigator plugin)
-
 -- Resize windows with Ctrl+Arrow
 map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 map("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
