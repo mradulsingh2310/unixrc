@@ -20,6 +20,11 @@ return {
       winopts = {
         height = 0.8,
         width = 0.8,
+        treesitter = { enabled = false },
+        preview = {
+          winopts = { winblend = 0 },
+        },
+        winblend = 0,
         hl = {
           normal = "FzfLuaNormal",
           border = "FzfLuaBorder",
