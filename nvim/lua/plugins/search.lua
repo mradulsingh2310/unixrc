@@ -15,6 +15,10 @@ return {
     vim.api.nvim_set_hl(0, "FzfLuaPreviewNormal", { bg = mantle, fg = text })
     vim.api.nvim_set_hl(0, "FzfLuaPreviewBorder", { bg = mantle, fg = surface2 })
     vim.api.nvim_set_hl(0, "FzfLuaCursorLine", { bg = "#313244" })
+    vim.api.nvim_set_hl(0, "FzfLuaTitle", { bg = base, fg = text })
+    vim.api.nvim_set_hl(0, "FzfLuaHeaderBind", { bg = base, fg = text })
+    vim.api.nvim_set_hl(0, "FzfLuaHeaderText", { bg = base, fg = text })
+    vim.api.nvim_set_hl(0, "FzfLuaFzfNormal", { bg = base, fg = text })
 
     opts = vim.tbl_deep_extend("force", opts, {
       fzf_colors = {
@@ -31,21 +35,31 @@ return {
         ["header"] = { "fg", "Comment" },
         ["gutter"] = { "bg", "FzfLuaNormal" },
       },
+      hls = {
+        normal = "FzfLuaNormal",
+        border = "FzfLuaBorder",
+        title = "FzfLuaTitle",
+        help_normal = "FzfLuaNormal",
+        help_border = "FzfLuaBorder",
+        preview_normal = "FzfLuaPreviewNormal",
+        preview_border = "FzfLuaPreviewBorder",
+        preview_title = "FzfLuaTitle",
+        cursor = "FzfLuaCursorLine",
+        cursorline = "FzfLuaCursorLine",
+        header_bind = "FzfLuaHeaderBind",
+        header_text = "FzfLuaHeaderText",
+        fzf = {
+          normal = "FzfLuaNormal",
+          cursorline = "FzfLuaCursorLine",
+          match = "Statement",
+        },
+      },
       winopts = {
         height = 0.8,
         width = 0.8,
-        treesitter = { enabled = false },
-        preview = {
-          winopts = { winblend = 0 },
-        },
         winblend = 0,
-        hl = {
-          normal = "FzfLuaNormal",
-          border = "FzfLuaBorder",
-          cursor = "FzfLuaCursorLine",
-          cursorline = "FzfLuaCursorLine",
-          preview_normal = "FzfLuaPreviewNormal",
-          preview_border = "FzfLuaPreviewBorder",
+        preview = {
+          winblend = 0,
         },
       },
     })
