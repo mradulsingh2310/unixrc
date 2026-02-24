@@ -17,6 +17,20 @@ return {
     vim.api.nvim_set_hl(0, "FzfLuaCursorLine", { bg = "#313244" })
 
     opts = vim.tbl_deep_extend("force", opts, {
+      fzf_colors = {
+        ["bg"] = { "bg", "FzfLuaNormal" },
+        ["bg+"] = { "bg", "FzfLuaCursorLine" },
+        ["fg"] = { "fg", "FzfLuaNormal" },
+        ["fg+"] = { "fg", "FzfLuaNormal" },
+        ["hl"] = { "fg", "Comment" },
+        ["hl+"] = { "fg", "Statement" },
+        ["info"] = { "fg", "Comment" },
+        ["prompt"] = { "fg", "Function" },
+        ["pointer"] = { "fg", "Statement" },
+        ["marker"] = { "fg", "Statement" },
+        ["header"] = { "fg", "Comment" },
+        ["gutter"] = { "bg", "FzfLuaNormal" },
+      },
       winopts = {
         height = 0.8,
         width = 0.8,
