@@ -10,6 +10,9 @@ vim.g.lazyvim_picker = "fzf"
 
 local opt = vim.opt
 
+-- Cursor shapes per mode (prevents block cursor from obscuring file tree icons)
+opt.guicursor = "n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250"
+
 -- UI
 opt.termguicolors = true -- True color support
 opt.cursorline = true -- Enable highlighting of the current line
