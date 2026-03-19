@@ -113,9 +113,9 @@ keybind = ctrl+shift+t=text:\x1b[116;6u
 keybind = ctrl+shift+b=text:\x1b[98;6u
 
 # Theme - Transparent dark with blur
-background = 1e1e2e
-foreground = cdd6f4
-background-opacity = 0.5
+background = 000000
+foreground = 000000
+background-opacity = 0.6
 background-blur-radius = 40
 
 # Cursor - Vim style (block, no blink)
@@ -124,7 +124,7 @@ cursor-style-blink = false
 
 # Font
 font-family = JetBrainsMono Nerd Font
-font-size = 14
+font-size = 16
 
 # Make Option key work as Alt (for Neovim keybindings)
 macos-option-as-alt = true
@@ -132,6 +132,10 @@ macos-option-as-alt = true
 # Option+Arrow = Move by word (works in shell, neovim, etc.)
 keybind = alt+left=text:\x1bb
 keybind = alt+right=text:\x1bf
+
+# Font size (Cmd+= to increase, Cmd+- to decrease)
+keybind = super+equal=increase_font_size:1
+keybind = super+minus=decrease_font_size:1
 
 # Padding
 window-padding-x = 10
