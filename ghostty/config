@@ -115,7 +115,7 @@ keybind = ctrl+shift+b=text:\x1b[98;6u
 # Theme - Transparent dark with blur
 background = 000000
 foreground = e6eaed
-background-opacity = 0.5
+background-opacity = 0.6
 background-blur-radius = 60
 
 # Cursor - Vim style (block, no blink)
