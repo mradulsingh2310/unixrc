@@ -124,7 +124,7 @@ cursor-style-blink = false
 
 # Font
 font-family = JetBrainsMono Nerd Font
-font-size = 16
+font-size = 18
 
 # Make Option key work as Alt (for Neovim keybindings)
 macos-option-as-alt = true
