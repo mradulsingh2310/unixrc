@@ -11,7 +11,7 @@ macos-titlebar-style = hidden
 macos-non-native-fullscreen = true
 
 # Auto-start tmux (attach to existing session or create new)
-# command = /opt/homebrew/bin/tmux new-session -A -s main
+command = /opt/homebrew/bin/tmux new-session -A -s main
 
 # Cmd+a sends Ctrl+a (tmux prefix)
 keybind = super+a=text:\x01
