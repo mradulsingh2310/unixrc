@@ -116,7 +116,7 @@ keybind = ctrl+shift+b=text:\x1b[98;6u
 background = 000000
 foreground = e6eaed
 background-opacity = 0.5
-background-blur-radius = 100
+background-blur-radius = 60
 
 # Cursor - Vim style (block, no blink)
 cursor-style = block
