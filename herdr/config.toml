@@ -1,0 +1,126 @@
+# ┌──────────────────────────────────────────────────────────────┐
+# │  HERDR CONFIG - Synced to: ~/unixrc/herdr/config.toml         │
+# │  Migrated from ~/.tmux.conf on 2026-08-01                     │
+# │  Reload without restart:  herdr server reload-config          │
+# └──────────────────────────────────────────────────────────────┘
+
+# Onboarding already seen.
+onboarding = false
+
+# ═══════════════════════════════════════════════════════════════
+# THEME - Glass effect preserved
+# ═══════════════════════════════════════════════════════════════
+# panel_bg = "reset" is the herdr equivalent of tmux's `bg=default`.
+# Without it herdr paints an opaque panel and you lose Ghostty's
+# background-opacity = 0.6 + background-blur-radius = 60.
+[theme]
+name = "catppuccin"
+
+[theme.custom]
+panel_bg = "reset"
+accent = "#58a6ff"   # was CYAN in tmux.conf
+green = "#3fb950"    # was GREEN
+red = "#ff6188"
+
+# ═══════════════════════════════════════════════════════════════
+# TERMINAL
+# ═══════════════════════════════════════════════════════════════
+[terminal]
+default_shell = "/bin/zsh"
+shell_mode = "auto"
+# tmux equivalent: split-window -c "#{pane_current_path}"
+new_cwd = "follow"
+
+# ═══════════════════════════════════════════════════════════════
+# KEYS - prefix stays Ctrl+A so muscle memory survives
+# ═══════════════════════════════════════════════════════════════
+[keys]
+prefix = "ctrl+a"
+
+# --- these match your old tmux binds exactly (herdr defaults) ---
+new_tab = "prefix+c"              # tmux: bind c
+next_tab = "prefix+n"             # tmux: bind n
+previous_tab = "prefix+p"         # tmux: bind p
+switch_tab = "prefix+1..9"        # tmux: bind 1..9
+close_pane = "prefix+x"           # tmux: bind x
+zoom = "prefix+z"                 # tmux: bind z (resize-pane -Z)
+split_horizontal = "prefix+minus" # tmux: bind -
+focus_pane_left = "prefix+h"      # tmux: bind h
+focus_pane_down = "prefix+j"      # tmux: bind j
+focus_pane_up = "prefix+k"        # tmux: bind k
+focus_pane_right = "prefix+l"     # tmux: bind l
+
+# --- changed from tmux ---
+# tmux used `bind |` for vertical split; herdr uses v.
+# Ghostty's Cmd+D is retargeted to send \x01v to match.
+split_vertical = "prefix+v"
+
+# tmux had direct `bind -n C-Up/Down/Left/Right resize-pane`.
+# herdr resize is MODAL: enter with prefix+r, then arrows, then Esc.
+resize_mode = "prefix+r"
+
+reload_config = "prefix+shift+r"  # tmux: bind r
+detach = "prefix+q"               # tmux: prefix+d
+toggle_sidebar = "prefix+b"       # new in herdr - no tmux equivalent
+help = "prefix+?"
+
+# tmux had `bind -n M-1..5` for prefix-less window switching.
+# herdr equivalent: Alt+1..9 jumps tabs directly, no prefix.
+[keys.indexed]
+tabs = "alt"
+
+# tmux: bind -n C-Up/Down resize.  Replaced by resize_mode above.
+# Lazygit popup - new, tmux had no equivalent.
+[[keys.command]]
+key = "prefix+g"
+type = "popup"
+command = "lazygit"
+width = "90%"
+height = "90%"
+
+# ═══════════════════════════════════════════════════════════════
+# UI
+# ═══════════════════════════════════════════════════════════════
+[ui]
+sidebar_width = 26
+mouse_capture = true          # tmux: set -g mouse on
+copy_on_select = true         # tmux: copy-pipe-and-cancel "pbcopy"
+pane_borders = true
+pane_gaps = true
+confirm_close = true
+prompt_new_tab_name = false   # tmux created windows instantly
+accent = "#58a6ff"
+
+# Your tmux status-right showed git branch. That token survives here.
+# (Clock, date and pane_current_path have no herdr equivalent.)
+[ui.sidebar.spaces]
+row_gap = 0
+rows = [["state_icon", "workspace"], ["branch", "git_status"]]
+
+[ui.sidebar.agents]
+row_gap = 0
+rows = [["state_icon", "workspace", "tab"], ["agent"]]
+
+[ui.sidebar.agents.rows_by_agent]
+claude = [
+  ["state_icon", "workspace", "tab"],
+  ["terminal_title_stripped"],
+  ["agent"],
+]
+
+[ui.toast]
+delivery = "herdr"
+delay_seconds = 1
+
+[ui.sound]
+enabled = false
+
+# ═══════════════════════════════════════════════════════════════
+# SESSION
+# ═══════════════════════════════════════════════════════════════
+[session]
+resume_agents_on_restore = true
+
+[advanced]
+# Matches tmux's history-limit 50000 in spirit (herdr counts bytes).
+scrollback_limit_bytes = 10000000

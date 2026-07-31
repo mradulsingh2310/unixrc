@@ -32,11 +32,15 @@ if ! diff -q "$HOME/.config/ghostty/config" "$REPO_DIR/ghostty/config" > /dev/nu
     CHANGED_FILES+=("ghostty")
 fi
 
-# Sync Tmux config
-if ! diff -q "$HOME/.tmux.conf" "$REPO_DIR/tmux/tmux.conf" > /dev/null 2>&1; then
-    cp "$HOME/.tmux.conf" "$REPO_DIR/tmux/tmux.conf"
-    log "Synced: tmux/tmux.conf"
-    CHANGED_FILES+=("tmux")
+# Sync herdr config (replaced tmux on 2026-08-01)
+# Guarded with -f so a missing source can never abort the script under `set -e`.
+if [[ -f "$HOME/.config/herdr/config.toml" ]]; then
+    mkdir -p "$REPO_DIR/herdr"
+    if ! diff -q "$HOME/.config/herdr/config.toml" "$REPO_DIR/herdr/config.toml" > /dev/null 2>&1; then
+        cp "$HOME/.config/herdr/config.toml" "$REPO_DIR/herdr/config.toml"
+        log "Synced: herdr/config.toml"
+        CHANGED_FILES+=("herdr")
+    fi
 fi
 
 # Sync Neovim config (check each file)
