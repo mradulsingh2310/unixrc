@@ -91,11 +91,28 @@ confirm_close = true
 prompt_new_tab_name = false   # tmux created windows instantly
 accent = "#58a6ff"
 
-# Your tmux status-right showed git branch. That token survives here.
-# (Clock, date and pane_current_path have no herdr equivalent.)
+# Replaces the old tmux status-right (path + git branch + clock + date).
+#   branch / git_status  -> built in, herdr computes them from the workspace cwd
+#   $path / $pr          -> reported by ~/.config/herdr/status.sh via
+#                           `herdr workspace report-metadata`, driven by a zsh
+#                           precmd/chpwd hook. $pr comes from `gh` and is cached
+#                           on disk + refreshed in background so the prompt
+#                           never blocks on the network.
 [ui.sidebar.spaces]
 row_gap = 0
-rows = [["state_icon", "workspace"], ["branch", "git_status"]]
+rows = [
+  [
+    { token = "state_icon" },
+    { token = "$path", fg = "#58a6ff", bold = true },
+  ],
+  [
+    { token = "branch", fg = "#a371f7" },
+    { token = "git_status", fg = "#d29922" },
+  ],
+  [
+    { token = "$pr", fg = "#3fb950" },
+  ],
+]
 
 [ui.sidebar.agents]
 row_gap = 0
