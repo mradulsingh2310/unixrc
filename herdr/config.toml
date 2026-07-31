@@ -82,7 +82,9 @@ height = "90%"
 # UI
 # ═══════════════════════════════════════════════════════════════
 [ui]
-sidebar_width = 26
+# Wider than default: the $path and $pr rows carry real content now.
+sidebar_width = 34
+sidebar_max_width = 46
 mouse_capture = true          # tmux: set -g mouse on
 copy_on_select = true         # tmux: copy-pipe-and-cancel "pbcopy"
 pane_borders = true
