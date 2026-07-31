@@ -33,15 +33,22 @@ if ! diff -q "$HOME/.config/ghostty/config" "$REPO_DIR/ghostty/config" > /dev/nu
 fi
 
 # Sync herdr config (replaced tmux on 2026-08-01)
-# Guarded with -f so a missing source can never abort the script under `set -e`.
-if [[ -f "$HOME/.config/herdr/config.toml" ]]; then
-    mkdir -p "$REPO_DIR/herdr"
-    if ! diff -q "$HOME/.config/herdr/config.toml" "$REPO_DIR/herdr/config.toml" > /dev/null 2>&1; then
-        cp "$HOME/.config/herdr/config.toml" "$REPO_DIR/herdr/config.toml"
-        log "Synced: herdr/config.toml"
-        CHANGED_FILES+=("herdr")
+# Each file guarded with -f so a missing source can never abort the script
+# under `set -e` - that is exactly how the old tmux stanza would have broken
+# every downstream sync if ~/.tmux.conf vanished.
+HERDR_FILES=("config.toml" "status.sh")
+mkdir -p "$REPO_DIR/herdr"
+for hf in "${HERDR_FILES[@]}"; do
+    src="$HOME/.config/herdr/$hf"
+    dst="$REPO_DIR/herdr/$hf"
+    if [[ -f "$src" ]]; then
+        if ! diff -q "$src" "$dst" > /dev/null 2>&1; then
+            cp "$src" "$dst"
+            log "Synced: herdr/$hf"
+            CHANGED_FILES+=("herdr")
+        fi
     fi
-fi
+done
 
 # Sync Neovim config (check each file)
 NVIM_SRC="$HOME/.config/nvim"
