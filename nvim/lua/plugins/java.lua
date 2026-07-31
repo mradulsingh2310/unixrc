@@ -95,19 +95,20 @@ return {
     "mfussenegger/nvim-jdtls",
     opts = function(_, opts)
       opts.init_options = opts.init_options or {}
-      local ext = opts.init_options.extendedClientCapabilities
-        or (vim.fn.has("nvim") == 1 and require("jdtls").extendedClientCapabilities)
-        or {}
-      ext = vim.tbl_deep_extend("force", ext, {
-        resolveAdditionalTextEditsSupport = true,
-        classFileContentsSupport = true,
-        generateToStringPromptSupport = true,
-        hashCodeEqualsPromptSupport = true,
-        advancedExtractRefactoringSupport = true,
-        advancedOrganizeImportsSupport = true,
-antml        = nil,
-      })
-      opts.init_options.extendedClientCapabilities = ext
+      opts.init_options.extendedClientCapabilities = vim.tbl_deep_extend(
+        "force",
+        opts.init_options.extendedClientCapabilities or {},
+        {
+          -- THE fix: lets jdtls send imports as additionalTextEdits on resolve.
+          resolveAdditionalTextEditsSupport = true,
+          classFileContentsSupport = true,
+          generateToStringPromptSupport = true,
+          hashCodeEqualsPromptSupport = true,
+          advancedExtractRefactoringSupport = true,
+          advancedOrganizeImportsSupport = true,
+existing  = nil,
+        }
+      )
       return opts
     end,
   },
