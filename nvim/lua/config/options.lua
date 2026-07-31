@@ -8,6 +8,14 @@ vim.g.python3_host_prog = "/opt/homebrew/bin/python3"
 -- Use fzf-lua instead of telescope
 vim.g.lazyvim_picker = "fzf"
 
+-- Python LSP: basedpyright (deepest inference / PyCharm-grade navigation).
+-- Ruff still handles lint + format; see lua/plugins/python.lua.
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff"
+
+-- TypeScript LSP: vtsls (resolves per-package tsconfig.json in monorepos).
+vim.g.lazyvim_ts_lsp = "vtsls"
+
 local opt = vim.opt
 
 -- Cursor shapes per mode (prevents block cursor from obscuring file tree icons)
