@@ -4,28 +4,34 @@
 # │  Then commit: cd ~/unixrc && git add -A && git commit -m "update ghostty" && git push
 # └──────────────────────────────────────────────────────────────┘
 
-# Hide native macOS tabs (use tmux tabs only)
+# Hide native macOS tabs (use herdr tabs only)
 macos-titlebar-style = hidden
 
 # Use non-native fullscreen (works with hidden titlebar)
 macos-non-native-fullscreen = true
 
-# Auto-start tmux (attach to existing session or create new)
-command = /opt/homebrew/bin/tmux new-session -A -s main
+# Auto-start herdr (attaches to the persistent session, creates if absent)
+command = /opt/homebrew/bin/herdr
 
-# Cmd+a sends Ctrl+a (tmux prefix)
+# ─────────────────────────────────────────
+# herdr control keys
+# All of these send the herdr prefix (Ctrl+A, \x01) then an action key.
+# Prefix is set in ~/.config/herdr/config.toml -> [keys] prefix = "ctrl+a"
+# ─────────────────────────────────────────
+
+# Cmd+a sends Ctrl+a (herdr prefix)
 keybind = super+a=text:\x01
 
-# Cmd+t for new tmux window
+# Cmd+t for new herdr tab
 keybind = super+t=text:\x01c
 
 # Cmd+Shift+t for new Ghostty window (separate terminal)
 keybind = super+shift+t=new_window
 
-# Cmd+w to close tmux pane
+# Cmd+w to close herdr pane
 keybind = super+w=text:\x01x
 
-# Cmd+1-9 for tmux windows (select-window directly)
+# Cmd+1-9 for herdr tabs (switch_tab = prefix+1..9)
 keybind = super+one=text:\x01\x31
 keybind = super+two=text:\x01\x32
 keybind = super+three=text:\x01\x33
@@ -36,14 +42,15 @@ keybind = super+seven=text:\x01\x37
 keybind = super+eight=text:\x01\x38
 keybind = super+nine=text:\x01\x39
 
-# Cmd+shift+] and [ for next/prev window
+# Cmd+shift+] and [ for next/prev tab
 keybind = super+shift+right_bracket=text:\x01n
 keybind = super+shift+left_bracket=text:\x01p
 
 # Cmd+d for vertical split
-keybind = super+d=text:\x01|
+# CHANGED: tmux used `|`, herdr uses `v` (split_vertical = "prefix+v")
+keybind = super+d=text:\x01v
 
-# Cmd+shift+d for horizontal split
+# Cmd+shift+d for horizontal split (herdr: split_horizontal = "prefix+minus")
 keybind = super+shift+d=text:\x01-
 
 # Fullscreen (Cmd+f)
@@ -52,20 +59,16 @@ keybind = super+f=toggle_fullscreen
 # Unbind Cmd+Enter so Rectangle can use it
 keybind = super+enter=unbind
 
-# Zoom/maximize current pane (Cmd+=)
-keybind = super+equal=text:\x01z
+# Cmd+r enters herdr resize mode (then arrows to resize, Esc to exit).
+# CHANGED: tmux had direct one-shot resize on Cmd+Alt+Arrow; herdr resize is modal.
+keybind = super+r=text:\x01r
 
-# Reset pane layout (Cmd+0)
-keybind = super+zero=text:\x01E
-
-# Resize tmux panes (Cmd+Alt+Arrow)
-keybind = super+alt+left=text:\x01H
-keybind = super+alt+right=text:\x01L
-keybind = super+alt+up=text:\x01K
-keybind = super+alt+down=text:\x01J
+# NOTE: tmux's `select-layout tiled` (was Cmd+0) has no herdr equivalent - removed.
+# NOTE: pane zoom is prefix+z, i.e. Cmd+A then z. Cmd+= is font size (see below).
 
 # ─────────────────────────────────────────
 # Neovim Cmd Keybindings (send escape sequences)
+# Verified to pass through herdr unmodified.
 # ─────────────────────────────────────────
 # Cmd+s = Save
 keybind = super+s=text:\x1b[27;6;115~
@@ -79,7 +82,7 @@ keybind = super+shift+z=text:\x1b[27;6;90~
 # Cmd+/ = Comment toggle
 keybind = super+slash=text:\x1b[27;6;47~
 
-# Cmd+p = Find files (sends Ctrl+P which works through tmux)
+# Cmd+p = Find files (sends Ctrl+P which works through the multiplexer)
 keybind = super+p=text:\x10
 
 # Cmd+shift+p = Command palette
@@ -88,7 +91,7 @@ keybind = super+shift+p=text:\x1b[27;6;80~
 # Cmd+b = Toggle file explorer
 keybind = super+b=text:\x1b[27;6;98~
 
-# Cmd+h/j/k/l = Navigate panes (works with tmux-navigator)
+# Cmd+h/j/k/l = Navigate splits
 keybind = super+h=text:\x08
 keybind = super+j=text:\x1b[27;6;106~
 keybind = super+k=text:\x1b[27;6;107~
@@ -113,6 +116,7 @@ keybind = ctrl+shift+t=text:\x1b[116;6u
 keybind = ctrl+shift+b=text:\x1b[98;6u
 
 # Theme - Transparent dark with blur
+# herdr preserves this via [theme.custom] panel_bg = "reset"
 background = 000000
 foreground = e6eaed
 background-opacity = 0.6
@@ -134,11 +138,11 @@ keybind = alt+left=text:\x1bb
 keybind = alt+right=text:\x1bf
 
 # Font size (Cmd+= to increase, Cmd+- to decrease)
+# FIXED: super+equal was previously bound twice (tmux zoom on an earlier line
+# was silently overridden by this one). Only this binding remains.
 keybind = super+equal=increase_font_size:1
 keybind = super+minus=decrease_font_size:1
 
 # Padding
 window-padding-x = 10
 window-padding-y = 5
-
-
