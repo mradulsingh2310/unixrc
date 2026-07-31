@@ -2,9 +2,14 @@
 
 My terminal development environment configuration for macOS.
 
-**Stack:** Ghostty + Tmux + Neovim (LazyVim)
+**Stack:** Ghostty + herdr + Neovim (LazyVim)
 
 **Theme:** Catppuccin Mocha with transparent backgrounds
+
+> Migrated from tmux to [herdr](https://herdr.dev/) on 2026-08-01.
+> herdr is an agent-aware multiplexer: same panes/tabs/sessions/detach model,
+> plus a sidebar showing AI agent state (idle / working / blocked / done).
+> The old tmux config remains in git history.
 
 ---
 
@@ -12,8 +17,8 @@ My terminal development environment configuration for macOS.
 
 ### Prerequisites
 - [Ghostty](https://ghostty.org/) terminal emulator
-- [tmux](https://github.com/tmux/tmux) with [TPM](https://github.com/tmux-plugins/tpm)
-- [Neovim](https://neovim.io/) 0.9+
+- [herdr](https://herdr.dev/) multiplexer (`brew install herdr`)
+- [Neovim](https://neovim.io/) 0.11+
 - [JetBrainsMono Nerd Font](https://www.nerdfonts.com/)
 
 ### Setup
@@ -25,10 +30,11 @@ git clone https://github.com/mradulsingh2310/unixrc.git ~/unixrc
 # Symlink configs
 ln -sf ~/unixrc/ghostty/config ~/.config/ghostty/config
 ln -sf ~/unixrc/nvim ~/.config/nvim
-ln -sf ~/unixrc/tmux/tmux.conf ~/.tmux.conf
+mkdir -p ~/.config/herdr
+ln -sf ~/unixrc/herdr/config.toml ~/.config/herdr/config.toml
 
-# Install tmux plugins (open tmux then press prefix + I)
-tmux source ~/.tmux.conf
+# Verify the herdr config parses
+herdr config check
 ```
 
 ---
@@ -42,43 +48,45 @@ tmux source ~/.tmux.conf
 | `⌥` | Option (Alt) |
 | `⌃` | Ctrl |
 | `⇧` | Shift |
-| `prefix` | Ctrl+a (tmux prefix) |
+| `prefix` | Ctrl+a (herdr prefix) |
 
 ---
 
 ## Ghostty Keybindings
 
-Ghostty is configured to auto-start tmux and translate macOS keybindings to terminal sequences.
+Ghostty auto-starts herdr and translates macOS keybindings to terminal sequences.
+Each `⌘` binding below sends the herdr prefix (`Ctrl+a`, `\x01`) plus an action key.
 
 ### Window/Pane Management
 
 | Keybinding | Action |
 |------------|--------|
-| `⌘ + t` | New tmux window |
+| `⌘ + t` | New herdr tab |
 | `⌘ + ⇧ + t` | New Ghostty window (separate terminal) |
-| `⌘ + w` | Close tmux pane |
+| `⌘ + w` | Close herdr pane |
 | `⌘ + d` | Vertical split |
 | `⌘ + ⇧ + d` | Horizontal split |
 | `⌘ + f` | Toggle fullscreen |
-| `⌘ + =` | Zoom/maximize current pane |
-| `⌘ + 0` | Reset pane layout (tiled) |
+| `⌘ + =` | Increase font size |
+| `⌘ + -` | Decrease font size |
+| `⌘ + r` | Enter resize mode (then arrows, `Esc` to exit) |
 
 ### Window Navigation
 
 | Keybinding | Action |
 |------------|--------|
-| `⌘ + 1-9` | Switch to tmux window 1-9 |
-| `⌘ + ⇧ + ]` | Next tmux window |
-| `⌘ + ⇧ + [` | Previous tmux window |
+| `⌘ + 1-9` | Switch to herdr tab 1-9 |
+| `⌥ + 1-9` | Switch to herdr tab 1-9 (no prefix) |
+| `⌘ + ⇧ + ]` | Next herdr tab |
+| `⌘ + ⇧ + [` | Previous herdr tab |
 
-### Pane Resize
+### Removed in the tmux → herdr migration
 
-| Keybinding | Action |
-|------------|--------|
-| `⌘ + ⌥ + ←` | Resize pane left |
-| `⌘ + ⌥ + →` | Resize pane right |
-| `⌘ + ⌥ + ↑` | Resize pane up |
-| `⌘ + ⌥ + ↓` | Resize pane down |
+| Was | Why |
+|-----|-----|
+| `⌘ + 0` (tiled layout) | herdr has no `select-layout` equivalent |
+| `⌘ + ⌥ + arrows` (resize) | herdr resize is modal — use `⌘ + r`, then arrows |
+| `⌘ + =` (zoom) | was already dead: it was bound twice and font-size won. Zoom is `prefix + z` |
 
 ### Neovim Commands (via escape sequences)
 
@@ -98,60 +106,67 @@ Ghostty is configured to auto-start tmux and translate macOS keybindings to term
 
 ---
 
-## Tmux Keybindings
+## herdr Keybindings
 
-**Prefix:** `Ctrl + a`
+**Prefix:** `Ctrl + a` (set in `herdr/config.toml` → `[keys] prefix`)
 
-### Session/Window Management
+Most of these are herdr's own defaults — they happened to match the old tmux
+binds, so only `split_vertical` needed retargeting (`|` → `v`).
 
-| Keybinding | Action |
-|------------|--------|
-| `prefix + c` | New window (preserves path) |
-| `prefix + \|` | Vertical split (preserves path) |
-| `prefix + -` | Horizontal split (preserves path) |
-| `prefix + x` | Close pane |
-| `prefix + z` | Zoom/unzoom pane |
-| `prefix + E` | Reset to tiled layout |
-| `prefix + r` | Reload config |
+### Tab/Pane Management
+
+| Keybinding | Action | vs tmux |
+|------------|--------|---------|
+| `prefix + c` | New tab (inherits cwd) | same |
+| `prefix + v` | Vertical split | **was `\|`** |
+| `prefix + -` | Horizontal split | same |
+| `prefix + x` | Close pane | same |
+| `prefix + z` | Zoom/unzoom pane | same |
+| `prefix + q` | Detach | was `prefix + d` |
+| `prefix + ⇧ + r` | Reload config | was `prefix + r` |
+| `prefix + b` | Toggle agent sidebar | **new** |
+| `prefix + ?` | Show all active bindings | **new** |
+| `prefix + g` | lazygit popup | **new** |
 
 ### Pane Navigation (Vim-style)
 
 | Keybinding | Action |
 |------------|--------|
-| `prefix + h` | Select pane left |
-| `prefix + j` | Select pane down |
-| `prefix + k` | Select pane up |
-| `prefix + l` | Select pane right |
-| `⌃ + h/j/k/l` | Seamless navigation (works with Neovim splits) |
+| `prefix + h` | Focus pane left |
+| `prefix + j` | Focus pane down |
+| `prefix + k` | Focus pane up |
+| `prefix + l` | Focus pane right |
 
-### Window Switching
+### Tab Switching
 
 | Keybinding | Action |
 |------------|--------|
-| `⌥ + 1-5` | Switch to window 1-5 |
-| `prefix + n` | Next window |
-| `prefix + p` | Previous window |
+| `⌥ + 1-9` | Switch to tab 1-9, no prefix (was `⌥ + 1-5`) |
+| `prefix + 1-9` | Switch to tab 1-9 |
+| `prefix + n` | Next tab |
+| `prefix + p` | Previous tab |
 
 ### Pane Resize
 
+herdr's resize is **modal**, unlike tmux's one-shot `Ctrl + arrow`:
+
 | Keybinding | Action |
 |------------|--------|
-| `⌃ + ↑` | Resize pane up |
-| `⌃ + ↓` | Resize pane down |
-| `⌃ + ←` | Resize pane left |
-| `⌃ + →` | Resize pane right |
+| `prefix + r` (or `⌘ + r`) | Enter resize mode |
+| `← ↓ ↑ →` | Resize while in resize mode |
+| `Esc` | Exit resize mode |
 
 ### Copy Mode
 
 | Keybinding | Action |
 |------------|--------|
-| Mouse drag | Select and copy to clipboard |
+| Mouse drag | Select and copy to clipboard (`copy_on_select = true`) |
 
-### Installed Plugins
+### Not carried over from tmux
 
-- **tpm** - Tmux Plugin Manager
-- **tmux-sensible** - Sensible defaults
-- **vim-tmux-navigator** - Seamless pane navigation with Neovim
+- **TPM / tmux-sensible / catppuccin plugin** — herdr has no plugin system; theming is native (`[theme] name = "catppuccin"`).
+- **vim-tmux-navigator** — removed from Neovim too; prefix-less `⌃+h/j/k/l` cross-navigation between multiplexer panes and Neovim splits is gone.
+- **Status bar clock, date, and `pane_current_path`** — no herdr equivalent. The path now lives in the zsh prompt (see `.zshrc`); the git branch is in herdr's sidebar.
 
 ---
 
@@ -181,7 +196,7 @@ Based on [LazyVim](https://www.lazyvim.org/) with custom extensions.
 
 | Keybinding | Action |
 |------------|--------|
-| `⌃ + h` | Navigate left (works across tmux panes) |
+| `⌃ + h` | Navigate left (Neovim splits only) |
 | `⌃ + j` | Navigate down |
 | `⌃ + k` | Navigate up |
 | `⌃ + l` | Navigate right |
@@ -277,8 +292,8 @@ Press `<Space>` and wait to see all available keybindings.
 
 ### Editor
 - **auto-save.nvim** - Automatic file saving
-- **vim-tmux-navigator** - Seamless tmux/neovim navigation
 - **telescope.nvim** - Fuzzy finder
+- **sidekick.nvim** - Copilot LSP Next Edit Suggestions + AI CLI terminal
 
 ### LSP
 - **nvim-lspconfig** - LSP configuration
@@ -303,7 +318,7 @@ Config changes are **automatically synced to GitHub** using macOS `launchd`.
 
 ### Watched paths
 - `~/.config/ghostty/config`
-- `~/.tmux.conf`
+- `~/.config/herdr/config.toml`
 - `~/.config/nvim/init.lua`
 - `~/.config/nvim/lua/config/*`
 - `~/.config/nvim/lua/plugins/*`
@@ -395,10 +410,11 @@ unixrc/
 │           ├── noice.lua
 │           ├── proto.lua
 │           ├── search.lua
-│           ├── tmux-navigator.lua
+│           ├── sidekick.lua      # Copilot NES + AI CLI
+│           ├── typescript.lua    # vtsls tuning
 │           └── which-key.lua
-├── tmux/
-│   └── tmux.conf       # Tmux configuration
+├── herdr/
+│   └── config.toml     # herdr multiplexer configuration
 ├── sync.sh             # Auto-sync script (triggered by launchd)
 ├── install-sync.sh     # Reinstall launchd agent after changes
 └── com.mradulsingh.unixrc-sync.plist  # launchd configuration
@@ -408,8 +424,10 @@ unixrc/
 
 ## Features
 
-### Seamless Navigation
-`Ctrl + h/j/k/l` works across both tmux panes and Neovim splits without any prefix.
+### Navigation
+`Ctrl + h/j/k/l` moves between Neovim splits. Moving between **herdr** panes uses
+`prefix + h/j/k/l` — the prefix-less cross-boundary navigation that
+vim-tmux-navigator provided has no herdr equivalent.
 
 ### macOS-Native Keybindings
 Use familiar `Cmd + s`, `Cmd + z`, `Cmd + p` shortcuts in Neovim through Ghostty's escape sequence translation.
