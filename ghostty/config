@@ -63,6 +63,10 @@ keybind = super+enter=unbind
 # CHANGED: tmux had direct one-shot resize on Cmd+Alt+Arrow; herdr resize is modal.
 keybind = super+r=text:\x01r
 
+# Cmd+shift+b toggles the herdr agent sidebar (toggle_sidebar = "prefix+b").
+# NOT Cmd+b - that is Neovim's Neo-tree toggle further down this file.
+keybind = super+shift+b=text:\x01b
+
 # NOTE: tmux's `select-layout tiled` (was Cmd+0) has no herdr equivalent - removed.
 # NOTE: pane zoom is prefix+z, i.e. Cmd+A then z. Cmd+= is font size (see below).
 
