@@ -35,6 +35,13 @@ return {
       local venv = find_venv()
       opts.servers = opts.servers or {}
 
+      -- Explicitly off. nvim-lspconfig now ships a `ty` config and
+      -- mason-lspconfig auto-enables any installed server, so simply removing
+      -- our old manual registration was NOT enough - ty kept attaching
+      -- alongside basedpyright and double-reported diagnostics.
+      opts.servers.ty = { enabled = false }
+      opts.servers.pyright = { enabled = false }
+
       -- ── basedpyright ────────────────────────────────────────────
       opts.servers.basedpyright = vim.tbl_deep_extend("force", opts.servers.basedpyright or {}, {
         settings = {
