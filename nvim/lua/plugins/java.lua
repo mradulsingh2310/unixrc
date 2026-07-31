@@ -81,20 +81,47 @@ return {
     end,
   },
 
-  -- Ensure nvim-cmp resolves completion items (applies imports)
+  -- ── Java auto-import on completion ──────────────────────────────
+  -- This block previously targeted "hrsh7th/nvim-cmp", which is NOT installed
+  -- (LazyVim moved to blink.cmp). lazy.nvim silently ignores specs for absent
+  -- plugins, so the auto-import fix never ran. Rewritten for blink.cmp.
+  --
+  -- jdtls sends `import` statements as `additionalTextEdits` on the completion
+  -- item's *resolve* response, not the initial response. Two things are needed:
+  --   1. jdtls must be told the client can apply them  -> extendedClientCapabilities
+  --   2. the completion UI must await resolve before confirming -> blink.cmp
+  -- See https://github.com/Saghen/blink.cmp/issues/1491
   {
-    "hrsh7th/nvim-cmp",
+    "mfussenegger/nvim-jdtls",
     opts = function(_, opts)
-      opts.completion = opts.completion or {}
-      opts.completion.completeopt = "menu,menuone,noinsert"
-
-      -- Ensure we confirm with replace to apply additional text edits (imports)
-      local cmp = require("cmp")
-      opts.mapping = vim.tbl_extend("force", opts.mapping or {}, {
-        ["<CR>"] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+      opts.init_options = opts.init_options or {}
+      local ext = opts.init_options.extendedClientCapabilities
+        or (vim.fn.has("nvim") == 1 and require("jdtls").extendedClientCapabilities)
+        or {}
+      ext = vim.tbl_deep_extend("force", ext, {
+        resolveAdditionalTextEditsSupport = true,
+        classFileContentsSupport = true,
+        generateToStringPromptSupport = true,
+        hashCodeEqualsPromptSupport = true,
+        advancedExtractRefactoringSupport = true,
+        advancedOrganizeImportsSupport = true,
+antml        = nil,
       })
-
+      opts.init_options.extendedClientCapabilities = ext
       return opts
     end,
+  },
+
+  {
+    "saghen/blink.cmp",
+    opts = {
+      completion = {
+        -- Give jdtls time to return additionalTextEdits before confirm applies
+        -- the item. Without this, confirming quickly drops the import.
+        accept = { auto_brackets = { enabled = true } },
+        menu = { draw = { treesitter = { "lsp" } } },
+        documentation = { auto_show = true, auto_show_delay_ms = 200 },
+      },
+    },
   },
 }
