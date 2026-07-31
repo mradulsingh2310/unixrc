@@ -106,7 +106,6 @@ return {
           hashCodeEqualsPromptSupport = true,
           advancedExtractRefactoringSupport = true,
           advancedOrganizeImportsSupport = true,
-existing  = nil,
         }
       )
       return opts
