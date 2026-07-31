@@ -1,5 +1,11 @@
 -- Python Development Configuration
--- Ruff (linting/formatting) + ty (type checking) + venv detection
+-- basedpyright (types/navigation/inlay hints) + Ruff (lint/format) + venv detection
+--
+-- Migrated 2026-08-01 from Astral `ty` -> basedpyright.
+-- `ty` is fast but pre-1.0 with deliberately incomplete inference, which cost
+-- go-to-definition into site-packages and reliable call hierarchy.
+-- LSP selection itself is set in lua/config/options.lua:
+--   vim.g.lazyvim_python_lsp = "basedpyright"
 
 -- Find project venv
 local function find_venv()
@@ -23,71 +29,55 @@ local function find_venv()
 end
 
 return {
-  -- Disable basedpyright/pyright from LazyVim's Python extra
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        basedpyright = { enabled = false },
-        pyright = { enabled = false },
-        ruff = {
-          init_options = {
-            settings = {
-              lineLength = 100,
-            },
-          },
-        },
-      },
-    },
-  },
-
-  -- Configure ty manually (not in lspconfig yet)
   {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
-      local lspconfig = require("lspconfig")
-      local configs = require("lspconfig.configs")
-
-      -- Register ty if not already registered
-      if not configs.ty then
-        configs.ty = {
-          default_config = {
-            cmd = { "ty", "server" },
-            filetypes = { "python" },
-            root_dir = lspconfig.util.root_pattern(
-              "pyproject.toml",
-              "setup.py",
-              "setup.cfg",
-              "requirements.txt",
-              ".git"
-            ),
-            single_file_support = true,
-            settings = {},
-          },
-        }
-      end
-
-      -- Add ty to servers with venv detection
       local venv = find_venv()
       opts.servers = opts.servers or {}
-      opts.servers.ty = {
-        settings = {
-          ty = venv and { pythonEnvironment = venv.path } or {},
-        },
-      }
 
-      -- Update ruff with venv interpreter
-      if venv and opts.servers.ruff then
-        opts.servers.ruff.init_options = opts.servers.ruff.init_options or {}
-        opts.servers.ruff.init_options.settings = opts.servers.ruff.init_options.settings or {}
-        opts.servers.ruff.init_options.settings.interpreter = { venv.python }
-      end
+      -- ── basedpyright ────────────────────────────────────────────
+      opts.servers.basedpyright = vim.tbl_deep_extend("force", opts.servers.basedpyright or {}, {
+        settings = {
+          basedpyright = {
+            -- basedpyright defaults to "recommended", which is extremely noisy
+            -- on existing codebases. "standard" matches pyright's behaviour.
+            -- Bump to "strict" per-project via pyrightconfig.json instead.
+            analysis = {
+              typeCheckingMode = "standard",
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              autoImportCompletions = true,
+              diagnosticMode = "openFilesOnly",
+              inlayHints = {
+                variableTypes = true,
+                callArgumentNames = true,
+                functionReturnTypes = true,
+                genericTypes = false,
+              },
+            },
+          },
+          -- Point basedpyright at the project interpreter so imports from
+          -- site-packages resolve instead of showing as unresolved.
+          python = venv and { pythonPath = venv.python } or {},
+        },
+      })
+
+      -- ── ruff ────────────────────────────────────────────────────
+      opts.servers.ruff = vim.tbl_deep_extend("force", opts.servers.ruff or {}, {
+        init_options = {
+          settings = {
+            lineLength = 100,
+            interpreter = venv and { venv.python } or nil,
+          },
+        },
+      })
 
       return opts
     end,
   },
 
-  -- Disable Ruff hover (ty handles it)
+  -- Ruff is a linter, not a type checker - let basedpyright own hover and
+  -- definitions so the two don't produce duplicate/conflicting responses.
   {
     "neovim/nvim-lspconfig",
     init = function()
@@ -96,8 +86,10 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client and client.name == "ruff" then
             client.server_capabilities.hoverProvider = false
+            client.server_capabilities.definitionProvider = false
           end
         end,
+        desc = "Disable ruff hover/definition in favour of basedpyright",
       })
     end,
   },
