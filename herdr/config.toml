@@ -110,6 +110,7 @@ accent = "#58a6ff"
 
 # Spaces = one row per WORKSPACE, so per-pane detail does not belong here.
 # branch/git_status are herdr built-ins derived from the workspace cwd.
+agent_panel_sort = "priority"
 [ui.sidebar.spaces]
 row_gap = 0
 rows = [
