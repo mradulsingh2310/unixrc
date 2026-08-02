@@ -87,8 +87,12 @@ sidebar_width = 34
 sidebar_max_width = 46
 mouse_capture = true          # tmux: set -g mouse on
 copy_on_select = true         # tmux: copy-pipe-and-cancel "pbcopy"
+# Pane borders carry the per-split status line (path · branch · PR), written
+# by status.sh via `herdr pane rename`. This is the "on top of each split"
+# display - herdr has no tmux-style global status bar.
 pane_borders = true
 pane_gaps = true
+show_agent_labels_on_pane_borders = true
 confirm_close = true
 prompt_new_tab_name = false   # tmux created windows instantly
 accent = "#58a6ff"
