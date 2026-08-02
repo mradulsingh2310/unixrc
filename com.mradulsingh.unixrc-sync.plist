@@ -17,6 +17,7 @@
         <string>/Users/mradulsingh/.config/ghostty/config</string>
         <string>/Users/mradulsingh/.config/herdr/config.toml</string>
         <string>/Users/mradulsingh/.config/herdr/status.sh</string>
+        <string>/Users/mradulsingh/.config/herdr/copy-pr-link.sh</string>
         <string>/Users/mradulsingh/.config/nvim/init.lua</string>
         <string>/Users/mradulsingh/.config/nvim/lua/config</string>
         <string>/Users/mradulsingh/.config/nvim/lua/plugins</string>

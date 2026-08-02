@@ -36,7 +36,7 @@ fi
 # Each file guarded with -f so a missing source can never abort the script
 # under `set -e` - that is exactly how the old tmux stanza would have broken
 # every downstream sync if ~/.tmux.conf vanished.
-HERDR_FILES=("config.toml" "status.sh")
+HERDR_FILES=("config.toml" "status.sh" "copy-pr-link.sh")
 mkdir -p "$REPO_DIR/herdr"
 for hf in "${HERDR_FILES[@]}"; do
     src="$HOME/.config/herdr/$hf"
