@@ -67,6 +67,13 @@ keybind = super+r=text:\x01r
 # NOT Cmd+b - that is Neovim's Neo-tree toggle further down this file.
 keybind = super+shift+b=text:\x01b
 
+# Cmd+shift+y copies the focused split's GitHub PR link to the clipboard.
+# Runs ~/.config/herdr/copy-pr-link.sh via herdr's prefix+y command binding.
+keybind = super+shift+y=text:\x01y
+
+# Cmd+g opens lazygit in a herdr popup (prefix+alt+g).
+keybind = super+g=text:\x01\x1bg
+
 # NOTE: tmux's `select-layout tiled` (was Cmd+0) has no herdr equivalent - removed.
 # NOTE: pane zoom is prefix+z, i.e. Cmd+A then z. Cmd+= is font size (see below).
 
