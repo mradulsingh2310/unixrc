@@ -69,14 +69,25 @@ help = "prefix+?"
 [keys.indexed]
 tabs = "alt"
 
-# tmux: bind -n C-Up/Down resize.  Replaced by resize_mode above.
 # Lazygit popup - new, tmux had no equivalent.
+# NOTE: must NOT be prefix+g - that is herdr's built-in `goto`. `herdr config
+# check` does not detect binding collisions, so this would have silently
+# shadowed goto. prefix+alt+g is herdr's own documented example.
 [[keys.command]]
-key = "prefix+g"
+key = "prefix+alt+g"
 type = "popup"
 command = "lazygit"
 width = "90%"
 height = "90%"
+
+# Copy the GitHub PR link for the FOCUSED split's repo, to the clipboard.
+# type = "shell" runs detached with no UI; the script raises a herdr
+# notification on success/failure instead. `y` for yank; it is unused by
+# any herdr default binding.
+[[keys.command]]
+key = "prefix+y"
+type = "shell"
+command = "/Users/mradulsingh/.config/herdr/copy-pr-link.sh"
 
 # ═══════════════════════════════════════════════════════════════
 # UI
