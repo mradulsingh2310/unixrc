@@ -84,8 +84,11 @@ height = "90%"
 # type = "shell" runs detached with no UI; the script raises a herdr
 # notification on success/failure instead. `y` for yank; it is unused by
 # any herdr default binding.
+# Two bindings on purpose: prefix+y, plus a DIRECT chord that skips prefix mode
+# entirely. Ghostty sends prefix bindings as two instant bytes (\x01 then key),
+# which prefix mode may not latch; ctrl+alt+y is a single unambiguous chord.
 [[keys.command]]
-key = "prefix+y"
+key = ["prefix+y", "ctrl+alt+y"]
 type = "shell"
 command = "/Users/mradulsingh/.config/herdr/copy-pr-link.sh"
 
