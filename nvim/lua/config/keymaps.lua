@@ -6,50 +6,49 @@ local map = vim.keymap.set
 
 -- ─────────────────────────────────────────
 -- Cmd Keybindings (via Ghostty escape sequences)
+--
+-- Ghostty sends CSI 27;9;<code>~ (super) and CSI 27;10;<code>~ (super+shift).
+-- Neovim decodes those into real <D-...> keys, so map <D-...> here — never the
+-- raw escape string, which Neovim consumes before mapping ever sees it.
 -- ─────────────────────────────────────────
 
 -- Cmd+s = Save
 map({ "n", "i", "v" }, "<M-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
-map({ "n", "i", "v" }, "\x1b[27;6;115~", "<cmd>w<cr><esc>", { desc = "Save file" })
+map({ "n", "i", "v" }, "<D-s>", "<cmd>w<cr><esc>", { desc = "Save file" })
 
 -- Cmd+z = Undo
-map({ "n", "i" }, "\x1b[27;6;122~", "<cmd>undo<cr>", { desc = "Undo" })
+map({ "n", "i" }, "<D-z>", "<cmd>undo<cr>", { desc = "Undo" })
 
 -- Cmd+shift+z = Redo
-map({ "n", "i" }, "\x1b[27;6;90~", "<cmd>redo<cr>", { desc = "Redo" })
+map({ "n", "i" }, "<D-Z>", "<cmd>redo<cr>", { desc = "Redo" })
 
 -- Cmd+/ = Comment toggle (using Comment.nvim or native)
-map("n", "\x1b[27;6;47~", "gcc", { desc = "Toggle comment", remap = true })
-map("v", "\x1b[27;6;47~", "gc", { desc = "Toggle comment", remap = true })
+map("n", "<D-/>", "gcc", { desc = "Toggle comment", remap = true })
+map("v", "<D-/>", "gc", { desc = "Toggle comment", remap = true })
 
--- Cmd+p = Find files (fzf-lua) - multiple fallbacks
-map("n", "\x1b[27;6;112~", "<cmd>FzfLua files<cr>", { desc = "Find files" })
-map("n", "<D-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
-map("n", "<C-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
--- Also map for insert mode
-map("i", "\x1b[27;6;112~", "<cmd>FzfLua files<cr>", { desc = "Find files" })
-map("i", "<D-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
+-- Cmd+p = Find files (fzf-lua) - Ghostty sends a literal Ctrl+P for this one
+map({ "n", "i" }, "<C-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
+map({ "n", "i" }, "<D-p>", "<cmd>FzfLua files<cr>", { desc = "Find files" })
 
 -- Cmd+shift+p = Command palette
-map("n", "\x1b[27;6;80~", "<cmd>FzfLua commands<cr>", { desc = "Command palette" })
+map("n", "<D-P>", "<cmd>FzfLua commands<cr>", { desc = "Command palette" })
 
 -- Cmd+b = Toggle file explorer (Neo-tree)
-map({ "n", "i", "v", "t" }, "\x1b[27;6;98~", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
 map({ "n", "i", "v", "t" }, "<D-b>", "<cmd>Neotree toggle<cr>", { desc = "Toggle file explorer" })
 
 -- Cmd+j/k/l = Navigate panes
-map("n", "\x1b[27;6;106~", "<C-w>j", { desc = "Navigate down" })
-map("n", "\x1b[27;6;107~", "<C-w>k", { desc = "Navigate up" })
-map("n", "\x1b[27;6;108~", "<C-w>l", { desc = "Navigate right" })
+map("n", "<D-j>", "<C-w>j", { desc = "Navigate down" })
+map("n", "<D-k>", "<C-w>k", { desc = "Navigate up" })
+map("n", "<D-l>", "<C-w>l", { desc = "Navigate right" })
 
 -- Cmd+n = New buffer
-map("n", "\x1b[27;6;110~", "<cmd>enew<cr>", { desc = "New buffer" })
+map("n", "<D-n>", "<cmd>enew<cr>", { desc = "New buffer" })
 
 -- Cmd+o = Open file
-map("n", "\x1b[27;6;111~", "<cmd>FzfLua files<cr>", { desc = "Open file" })
+map("n", "<D-o>", "<cmd>FzfLua files<cr>", { desc = "Open file" })
 
 -- Cmd+, = Open config
-map("n", "\x1b[27;6;44~", "<cmd>e ~/.config/nvim/init.lua<cr>", { desc = "Open config" })
+map("n", "<D-,>", "<cmd>e ~/.config/nvim/init.lua<cr>", { desc = "Open config" })
 
 -- ─────────────────────────────────────────
 -- Insert Mode Shortcuts (Mac-style editing)
