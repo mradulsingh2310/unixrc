@@ -17,6 +17,11 @@
 emulate -L zsh
 setopt local_options
 
+# herdr runs `type = "shell"` commands detached, WITHOUT your login PATH.
+# gh, herdr and python3 all live in /opt/homebrew/bin, so without this the
+# script silently exits 1 and the key looks dead.
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
 notify() {
   # $1 title, $2 body, $3 sound
   if command -v herdr >/dev/null 2>&1; then
