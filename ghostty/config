@@ -80,42 +80,49 @@ keybind = super+g=text:\x01\x1bg
 # ─────────────────────────────────────────
 # Neovim Cmd Keybindings (send escape sequences)
 # Verified to pass through herdr unmodified.
+#
+# Format is xterm modifyOtherKeys: CSI 27 ; <mod> ; <keycode> ~
+# mod = 1 + shift(1) + alt(2) + ctrl(4) + super(8)
+#   9  = super           -> Neovim sees <D-x>
+#   10 = super+shift     -> Neovim sees <D-X>
+# Do NOT use mod 6 (ctrl+shift): Neovim decodes it to <C-S-X>, which collides
+# with the Ctrl+Shift bindings below and never matches a <D-...> mapping.
 # ─────────────────────────────────────────
 # Cmd+s = Save
-keybind = super+s=text:\x1b[27;6;115~
+keybind = super+s=text:\x1b[27;9;115~
 
 # Cmd+z = Undo
-keybind = super+z=text:\x1b[27;6;122~
+keybind = super+z=text:\x1b[27;9;122~
 
 # Cmd+shift+z = Redo
-keybind = super+shift+z=text:\x1b[27;6;90~
+keybind = super+shift+z=text:\x1b[27;10;90~
 
 # Cmd+/ = Comment toggle
-keybind = super+slash=text:\x1b[27;6;47~
+keybind = super+slash=text:\x1b[27;9;47~
 
 # Cmd+p = Find files (sends Ctrl+P which works through the multiplexer)
 keybind = super+p=text:\x10
 
 # Cmd+shift+p = Command palette
-keybind = super+shift+p=text:\x1b[27;6;80~
+keybind = super+shift+p=text:\x1b[27;10;80~
 
 # Cmd+b = Toggle file explorer
-keybind = super+b=text:\x1b[27;6;98~
+keybind = super+b=text:\x1b[27;9;98~
 
 # Cmd+h/j/k/l = Navigate splits
 keybind = super+h=text:\x08
-keybind = super+j=text:\x1b[27;6;106~
-keybind = super+k=text:\x1b[27;6;107~
-keybind = super+l=text:\x1b[27;6;108~
+keybind = super+j=text:\x1b[27;9;106~
+keybind = super+k=text:\x1b[27;9;107~
+keybind = super+l=text:\x1b[27;9;108~
 
 # Cmd+n = New buffer
-keybind = super+n=text:\x1b[27;6;110~
+keybind = super+n=text:\x1b[27;9;110~
 
 # Cmd+o = Open file
-keybind = super+o=text:\x1b[27;6;111~
+keybind = super+o=text:\x1b[27;9;111~
 
 # Cmd+, = Open settings/config
-keybind = super+comma=text:\x1b[27;6;44~
+keybind = super+comma=text:\x1b[27;9;44~
 
 # ─────────────────────────────────────────
 # Neovim Test/Debug Keybindings (Ctrl+Shift)
