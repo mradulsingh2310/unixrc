@@ -22,6 +22,11 @@ setopt local_options
 # script silently exits 1 and the key looks dead.
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 
+# Debug trail: proves whether the key actually fired.
+_log() { print -r -- "[$(date '+%H:%M:%S')] $*" >> "$HOME/.cache/herdr-status/copy-pr.log" 2>/dev/null }
+mkdir -p "$HOME/.cache/herdr-status" 2>/dev/null
+_log "fired (PATH=$PATH)"
+
 notify() {
   # $1 title, $2 body, $3 sound
   if command -v herdr >/dev/null 2>&1; then
