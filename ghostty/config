@@ -69,7 +69,7 @@ keybind = super+shift+b=text:\x01b
 
 # Cmd+shift+y copies the focused split's GitHub PR link to the clipboard.
 # Runs ~/.config/herdr/copy-pr-link.sh via herdr's prefix+y command binding.
-keybind = super+shift+y=text:\x01y
+keybind = super+shift+y=text:\x1b\x19
 
 # Cmd+g opens lazygit in a herdr popup (prefix+alt+g).
 keybind = super+g=text:\x01\x1bg
